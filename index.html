@@ -286,6 +286,32 @@
         .score-high { color: #34d399; }
         .score-mid { color: var(--gold); }
         .score-low { color: var(--pink); }
+        
+        /* Dress Me Occasion Buttons - Glassmorphism */
+        .dress-me-occ-btn {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: var(--text-secondary);
+            padding: 12px 14px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: left;
+        }
+        
+        .dress-me-occ-btn:hover {
+            background: rgba(255, 90, 143, 0.1);
+            border-color: rgba(255, 90, 143, 0.25);
+            color: var(--pink);
+        }
+        
+        .dress-me-occ-btn.selected {
+            background: rgba(255, 90, 143, 0.15);
+            border-color: var(--pink);
+            color: var(--pink);
+        }
     </style>
 </head>
 <body class="pb-24">
@@ -346,6 +372,23 @@
                     Don't Rate.<br>
                     <span class="logo">Match.</span>
                 </h2>
+            </div>
+
+            <!-- Weather Widget -->
+            <div id="weather-widget" class="glass" style="border-radius: 16px; padding: 16px; display: none;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <span id="weather-icon" style="font-size: 32px;">🌤️</span>
+                        <div>
+                            <p id="weather-temp" style="font-size: 24px; font-weight: 700;" class="text-brand">--°</p>
+                            <p id="weather-desc" style="font-size: 12px; color: var(--text-muted);">Loading weather...</p>
+                        </div>
+                    </div>
+                    <div style="text-align: right;">
+                        <p id="weather-high-low" style="font-size: 11px; color: var(--text-muted);">H: --° L: --°</p>
+                    </div>
+                </div>
+                <div id="weather-tips" style="margin-top: 12px; display: flex; flex-wrap: wrap; gap: 6px;"></div>
             </div>
 
             <!-- Upload Zone -->
@@ -427,9 +470,17 @@
                 <!-- THE ROAST - Special Fire Card -->
                 <div id="roast-section" style="display: none; margin-top: 16px;" class="roast-card fade-in">
                     <div style="padding: 24px; border-radius: 20px;">
-                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
-                            <span style="font-size: 18px;">🔥</span>
-                            <p class="label-fire" style="font-size: 11px; text-transform: uppercase; letter-spacing: 2px; font-weight: 700;">The Roast</p>
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <span style="font-size: 18px;">🔥</span>
+                                <p class="label-fire" style="font-size: 11px; text-transform: uppercase; letter-spacing: 2px; font-weight: 700;">The Roast</p>
+                            </div>
+                            <button onclick="shareRoast()" style="padding: 8px 14px; border-radius: 8px; font-size: 11px; font-weight: 700; background: rgba(255,107,53,0.15); color: #ff6b35; border: 1px solid rgba(255,107,53,0.3); cursor: pointer; display: flex; align-items: center; gap: 6px;">
+                                <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path>
+                                </svg>
+                                Share
+                            </button>
                         </div>
                         <p id="roast-text" style="font-size: 16px; color: var(--text-primary); line-height: 1.7; font-weight: 500; letter-spacing: -0.1px;"></p>
                     </div>
@@ -465,6 +516,27 @@
                     <div id="items-container" style="display: flex; flex-wrap: wrap; gap: 8px;"></div>
                 </div>
 
+                <!-- Wardrobe Auto-Add Notification -->
+                <div id="wardrobe-notification" style="display: none;" class="fade-in">
+                    <div class="glass" style="border-radius: 16px; padding: 20px; border-left: 3px solid #34d399;">
+                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                            <span style="font-size: 16px;">👗</span>
+                            <p style="font-size: 11px; color: #34d399; text-transform: uppercase; letter-spacing: 2px; font-weight: 600;">Added to Wardrobe</p>
+                        </div>
+                        <p id="wardrobe-added-text" style="font-size: 14px; color: var(--text-secondary); line-height: 1.5;"></p>
+                    </div>
+                </div>
+
+                <!-- Tags Section -->
+                <div id="tags-section" class="glass" style="border-radius: 16px; padding: 16px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                        <p style="font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px;">🏷️ Tags</p>
+                        <button onclick="saveTags()" id="save-tags-btn" style="display: none; padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: 600; background: linear-gradient(135deg, var(--pink) 0%, var(--peach) 100%); color: #000; border: none; cursor: pointer;">Save</button>
+                    </div>
+                    <div id="tags-display" style="display: flex; flex-wrap: wrap; gap: 6px;"></div>
+                    <input type="text" id="tags-input" placeholder="Add tags (comma separated): summer, casual, favorite..." style="display: none; width: 100%; padding: 12px; border-radius: 10px; font-size: 13px; margin-top: 8px; border: 1px solid rgba(255,255,255,0.06); background: rgba(255,255,255,0.03); color: white;" oninput="showSaveTagsBtn()">
+                </div>
+
                 <!-- Add to Closet -->
                 <div id="closet-offer" style="display: none; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.05);">
                     <button onclick="saveToCloset()" class="glass" style="width: 100%; padding: 14px; border-radius: 14px; font-size: 13px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
@@ -477,6 +549,10 @@
 
                 <!-- Actions -->
                 <div style="display: flex; gap: 12px;">
+                    <button onclick="toggleFavorite()" id="favorite-btn" class="glass" style="flex: 1; padding: 14px; border-radius: 14px; font-size: 13px; font-weight: 500; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                        <span id="favorite-icon">🤍</span>
+                        <span id="favorite-text">Save Fit</span>
+                    </button>
                     <button onclick="resetAnalysis()" class="glass" style="flex: 1; padding: 14px; border-radius: 14px; font-size: 13px; font-weight: 500; cursor: pointer;">Try Again</button>
                     <button onclick="resetAll()" style="flex: 1; padding: 14px; border-radius: 14px; font-size: 13px; font-weight: 500; cursor: pointer; background: transparent; border: 1px solid rgba(255,90,143,0.3); color: var(--pink);">New Fit</button>
                 </div>
@@ -496,10 +572,41 @@
 
         <!-- ========== CLOSET VIEW ========== -->
         <div id="closet-view" style="display: none;" class="space-y-5">
-            <header style="padding: 16px 0;">
-                <h2 class="logo" style="font-size: 22px;">Your Closet</h2>
-                <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Saved items from outfit analyses</p>
+            <header style="padding: 16px 0; display: flex; justify-content: space-between; align-items: flex-start;">
+                <div>
+                    <h2 class="logo" style="font-size: 22px;">Your Closet</h2>
+                    <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Saved items from outfit analyses</p>
+                </div>
+                <button onclick="openDressMeModal()" class="btn-gradient" style="padding: 10px 16px; border-radius: 12px; font-size: 12px; font-weight: 700;">
+                    ✨ Dress Me
+                </button>
             </header>
+            
+            <!-- Category Filter Tabs -->
+            <div id="closet-filters" style="display: flex; gap: 8px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 8px;">
+                <button onclick="filterCloset('all')" class="closet-filter-btn active" data-filter="all" style="flex-shrink: 0; padding: 10px 16px; border-radius: 20px; font-size: 12px; font-weight: 600; background: linear-gradient(135deg, var(--pink) 0%, var(--peach) 100%); color: #000; border: none; cursor: pointer;">All</button>
+                <button onclick="filterCloset('tops')" class="closet-filter-btn" data-filter="tops" style="flex-shrink: 0; padding: 10px 16px; border-radius: 20px; font-size: 12px; font-weight: 600; background: rgba(255,255,255,0.03); color: var(--text-secondary); border: 1px solid rgba(255,255,255,0.06); cursor: pointer;">👕 Tops</button>
+                <button onclick="filterCloset('bottoms')" class="closet-filter-btn" data-filter="bottoms" style="flex-shrink: 0; padding: 10px 16px; border-radius: 20px; font-size: 12px; font-weight: 600; background: rgba(255,255,255,0.03); color: var(--text-secondary); border: 1px solid rgba(255,255,255,0.06); cursor: pointer;">👖 Bottoms</button>
+                <button onclick="filterCloset('footwear')" class="closet-filter-btn" data-filter="footwear" style="flex-shrink: 0; padding: 10px 16px; border-radius: 20px; font-size: 12px; font-weight: 600; background: rgba(255,255,255,0.03); color: var(--text-secondary); border: 1px solid rgba(255,255,255,0.06); cursor: pointer;">👟 Footwear</button>
+                <button onclick="filterCloset('outerwear')" class="closet-filter-btn" data-filter="outerwear" style="flex-shrink: 0; padding: 10px 16px; border-radius: 20px; font-size: 12px; font-weight: 600; background: rgba(255,255,255,0.03); color: var(--text-secondary); border: 1px solid rgba(255,255,255,0.06); cursor: pointer;">🧥 Outerwear</button>
+                <button onclick="filterCloset('accessories')" class="closet-filter-btn" data-filter="accessories" style="flex-shrink: 0; padding: 10px 16px; border-radius: 20px; font-size: 12px; font-weight: 600; background: rgba(255,255,255,0.03); color: var(--text-secondary); border: 1px solid rgba(255,255,255,0.06); cursor: pointer;">⌚ Accessories</button>
+            </div>
+            
+            <!-- Item Count -->
+            <p id="closet-count" style="font-size: 11px; color: var(--text-muted); margin-bottom: 12px;"></p>
+            
+            <!-- Wardrobe Insights Card -->
+            <div id="wardrobe-insights" style="display: none;" class="glass-card" style="border-radius: 16px; padding: 16px; margin-bottom: 16px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                    <div>
+                        <p style="font-size: 12px; color: var(--text-muted);">Wardrobe Complete</p>
+                        <p id="completeness-score" style="font-size: 28px; font-weight: 700;" class="text-brand">0%</p>
+                    </div>
+                    <button onclick="openGapAnalysisModal()" style="padding: 10px 16px; border-radius: 10px; font-size: 11px; font-weight: 600; background: rgba(255,255,255,0.03); color: var(--text-secondary); border: 1px solid rgba(255,255,255,0.06); cursor: pointer;">View Gaps →</button>
+                </div>
+                <p id="one-purchase-tip" style="font-size: 12px; color: var(--text-secondary); font-style: italic;"></p>
+            </div>
+            
             <div id="closet-grid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;"></div>
             <div id="closet-empty" style="display: none; text-align: center; padding: 48px 0;">
                 <svg width="48" height="48" fill="none" stroke="var(--text-muted)" viewBox="0 0 24 24" style="margin: 0 auto 16px; opacity: 0.3;">
@@ -552,6 +659,41 @@
                 <p id="insight-text" style="font-size: 14px; color: var(--text-secondary); line-height: 1.6;"></p>
             </div>
 
+            <!-- AI Style Learning Section -->
+            <div id="style-learning-section" style="display: none;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                    <p style="font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px;">🧠 AI Style Learning</p>
+                    <span id="style-persona" style="font-size: 11px; font-weight: 700; color: var(--pink); padding: 4px 12px; border-radius: 12px; background: rgba(255,90,143,0.1); border: 1px solid rgba(255,90,143,0.2);">Loading...</span>
+                </div>
+                
+                <!-- Preferred Colors -->
+                <div id="preferred-colors-section" class="glass" style="border-radius: 12px; padding: 14px; margin-bottom: 12px;">
+                    <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 10px;">Your Go-To Colors</p>
+                    <div id="preferred-colors" style="display: flex; flex-wrap: wrap; gap: 8px;"></div>
+                </div>
+                
+                <!-- Preferred Occasions -->
+                <div id="preferred-occasions-section" class="glass" style="border-radius: 12px; padding: 14px; margin-bottom: 12px;">
+                    <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 10px;">Your Style Zones</p>
+                    <div id="preferred-occasions" style="display: flex; flex-wrap: wrap; gap: 8px;"></div>
+                </div>
+                
+                <!-- AI Recommendations -->
+                <div class="glass" style="border-radius: 12px; padding: 14px; border-left: 2px solid var(--peach);">
+                    <p style="font-size: 11px; color: var(--peach); margin-bottom: 8px;">💡 Personalized Tips</p>
+                    <div id="ai-recommendations"></div>
+                </div>
+            </div>
+
+            <!-- Saved Fits Section -->
+            <div id="saved-fits-section" style="display: none;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                    <p style="font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px;">❤️ Saved Fits</p>
+                    <span id="saved-fits-count" style="font-size: 11px; color: var(--pink);">0 saved</span>
+                </div>
+                <div id="saved-fits-grid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;"></div>
+            </div>
+
             <div>
                 <p style="font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 12px;">Recent History</p>
                 <div id="history-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;"></div>
@@ -577,12 +719,153 @@
         </div>
     </div>
 
+    <!-- Virtual Try-On Modal -->
+    <div id="try-on-modal" style="display: none; position: fixed; inset: 0; z-index: 300; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px);" onclick="closeTryOnModal(event)">
+        <div style="position: absolute; bottom: 0; left: 0; right: 0; background: var(--navy-base); border-radius: 24px 24px 0 0; padding: 24px; max-height: 90vh; overflow-y: auto;" onclick="event.stopPropagation()">
+            <div style="width: 36px; height: 4px; background: rgba(255,255,255,0.15); border-radius: 2px; margin: 0 auto 20px;"></div>
+            <h3 style="font-size: 18px; font-weight: 700; margin-bottom: 8px;">👗 Virtual Try-On</h3>
+            <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 20px;">See how this item looks on you!</p>
+            
+            <input type="hidden" id="try-on-item-id">
+            
+            <!-- Selected Item Display -->
+            <div id="try-on-item-preview" class="glass" style="border-radius: 12px; padding: 16px; margin-bottom: 16px; display: flex; align-items: center; gap: 12px;">
+                <div id="try-on-item-image" style="width: 60px; height: 60px; border-radius: 10px; background: rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center; font-size: 28px;">👔</div>
+                <div>
+                    <p id="try-on-item-name" style="font-size: 14px; font-weight: 600;">Select an item</p>
+                    <p id="try-on-item-category" style="font-size: 11px; color: var(--text-muted);">From your closet</p>
+                </div>
+            </div>
+            
+            <!-- Style Note -->
+            <div style="margin-bottom: 16px;">
+                <label style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px; display: block;">Style preference (optional)</label>
+                <input type="text" id="try-on-style" style="width: 100%; padding: 14px 16px; border-radius: 12px; font-size: 14px; border: 1px solid rgba(255,255,255,0.06); background: rgba(255,255,255,0.03); color: white;" placeholder="e.g., casual, formal, street style">
+            </div>
+            
+            <!-- Loading -->
+            <div id="try-on-loading" style="display: none; text-align: center; padding: 32px 0;">
+                <div class="loader" style="margin: 0 auto 16px;"></div>
+                <p style="color: var(--text-secondary); font-size: 14px;">Generating your look...</p>
+            </div>
+            
+            <!-- Result -->
+            <div id="try-on-result" style="display: none;"></div>
+            
+            <!-- Buttons -->
+            <div id="try-on-buttons" style="display: flex; gap: 12px; margin-top: 16px;">
+                <button onclick="closeTryOnModal()" style="flex: 1; padding: 14px; border-radius: 12px; font-size: 14px; font-weight: 600; background: rgba(255,255,255,0.03); color: var(--text-secondary); border: 1px solid rgba(255,255,255,0.06); cursor: pointer;">Cancel</button>
+                <button onclick="generateTryOn()" id="try-on-submit" style="flex: 1; padding: 14px; border-radius: 12px; font-size: 14px; font-weight: 700; background: linear-gradient(135deg, var(--pink) 0%, var(--peach) 100%); color: #000; border: none; cursor: pointer;">✨ Try It On</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Item Modal -->
+    <div id="edit-item-modal" style="display: none; position: fixed; inset: 0; z-index: 300; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px);" onclick="closeEditModal(event)">
+        <div style="position: absolute; bottom: 0; left: 0; right: 0; background: var(--navy-base); border-radius: 24px 24px 0 0; padding: 24px; transform: translateY(0); transition: transform 0.3s ease;" onclick="event.stopPropagation()">
+            <div style="width: 36px; height: 4px; background: rgba(255,255,255,0.15); border-radius: 2px; margin: 0 auto 20px;"></div>
+            <h3 style="font-size: 18px; font-weight: 700; margin-bottom: 20px;">Edit Item</h3>
+            
+            <input type="hidden" id="edit-item-id">
+            
+            <div style="margin-bottom: 16px;">
+                <label style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px; display: block;">Item Name</label>
+                <input type="text" id="edit-item-name" style="width: 100%; padding: 14px 16px; border-radius: 12px; font-size: 14px; border: 1px solid rgba(255,255,255,0.06); background: rgba(255,255,255,0.03); color: white;">
+            </div>
+            
+            <div style="margin-bottom: 16px;">
+                <label style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px; display: block;">Category</label>
+                <select id="edit-item-category" style="width: 100%; padding: 14px 16px; border-radius: 12px; font-size: 14px; border: 1px solid rgba(255,255,255,0.06); background: rgba(255,255,255,0.03); color: white; appearance: none; cursor: pointer;">
+                    <option value="">Select category</option>
+                    <option value="tops">👕 Tops</option>
+                    <option value="bottoms">👖 Bottoms</option>
+                    <option value="footwear">👟 Footwear</option>
+                    <option value="outerwear">🧥 Outerwear</option>
+                    <option value="accessories">⌚ Accessories</option>
+                </select>
+            </div>
+            
+            <div style="margin-bottom: 24px;">
+                <label style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px; display: block;">Color</label>
+                <input type="text" id="edit-item-color" style="width: 100%; padding: 14px 16px; border-radius: 12px; font-size: 14px; border: 1px solid rgba(255,255,255,0.06); background: rgba(255,255,255,0.03); color: white;" placeholder="e.g., Navy Blue">
+            </div>
+            
+            <div style="display: flex; gap: 12px;">
+                <button onclick="closeEditModal()" style="flex: 1; padding: 14px; border-radius: 12px; font-size: 14px; font-weight: 600; background: rgba(255,255,255,0.03); color: var(--text-secondary); border: 1px solid rgba(255,255,255,0.06); cursor: pointer;">Cancel</button>
+                <button onclick="saveItemEdit()" style="flex: 1; padding: 14px; border-radius: 12px; font-size: 14px; font-weight: 700; background: linear-gradient(135deg, var(--pink) 0%, var(--peach) 100%); color: #000; border: none; cursor: pointer;">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dress Me Modal -->
+    <div id="dress-me-modal" style="display: none; position: fixed; inset: 0; z-index: 300; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px);" onclick="closeDressMeModal(event)">
+        <div style="position: absolute; bottom: 0; left: 0; right: 0; background: var(--navy-base); border-radius: 24px 24px 0 0; padding: 24px; max-height: 90vh; overflow-y: auto;" onclick="event.stopPropagation()">
+            <div style="width: 36px; height: 4px; background: rgba(255,255,255,0.15); border-radius: 2px; margin: 0 auto 20px;"></div>
+            <h3 style="font-size: 18px; font-weight: 700; margin-bottom: 8px;">✨ Dress Me From Closet</h3>
+            <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 20px;">AI will suggest outfits from your wardrobe</p>
+            
+            <!-- Occasion Selector - Custom Glassmorphism -->
+            <div style="margin-bottom: 16px;">
+                <label style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px; display: block;">Where you headed?</label>
+                
+                <!-- Selected Occasion Display -->
+                <button id="dress-me-occasion-btn" onclick="toggleDressMeOccasionGrid()" class="glass" style="width: 100%; padding: 14px 16px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; margin-bottom: 12px;">
+                    <span id="dress-me-occasion-text" style="color: var(--text-muted); font-size: 14px;">Select occasion</span>
+                    <svg id="dress-me-occasion-arrow" width="18" height="18" fill="none" stroke="var(--text-muted)" viewBox="0 0 24 24" style="transition: transform 0.2s ease;">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                </button>
+                
+                <!-- Hidden input for value -->
+                <input type="hidden" id="dress-me-occasion" value="">
+                
+                <!-- Occasion Grid (Glassmorphism) -->
+                <div id="dress-me-occasion-grid" style="display: none; background: rgba(15, 18, 32, 0.95); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 12px;">
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px;">
+                        <button type="button" onclick="selectDressMeOccasion('Casual hangout')" class="dress-me-occ-btn">☕ Casual hangout</button>
+                        <button type="button" onclick="selectDressMeOccasion('Office / Work')" class="dress-me-occ-btn">💼 Office / Work</button>
+                        <button type="button" onclick="selectDressMeOccasion('Date Night')" class="dress-me-occ-btn">💫 Date Night</button>
+                        <button type="button" onclick="selectDressMeOccasion('Formal Event')" class="dress-me-occ-btn">🎩 Formal Event</button>
+                        <button type="button" onclick="selectDressMeOccasion('Wedding Guest')" class="dress-me-occ-btn">💒 Wedding Guest</button>
+                        <button type="button" onclick="selectDressMeOccasion('Party / Club')" class="dress-me-occ-btn">🎉 Party / Club</button>
+                        <button type="button" onclick="selectDressMeOccasion('Street Style')" class="dress-me-occ-btn">👟 Street Style</button>
+                        <button type="button" onclick="selectDressMeOccasion('Brunch')" class="dress-me-occ-btn">🥐 Brunch</button>
+                        <button type="button" onclick="selectDressMeOccasion('Interview')" class="dress-me-occ-btn">📋 Interview</button>
+                        <button type="button" onclick="selectDressMeOccasion('Dholki / Mehndi')" class="dress-me-occ-btn">💃 Dholki / Mehndi</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Vibe Goal -->
+            <div style="margin-bottom: 24px;">
+                <label style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px; display: block;">Vibe goal (optional)</label>
+                <input type="text" id="dress-me-vibe" style="width: 100%; padding: 14px 16px; border-radius: 12px; font-size: 14px; border: 1px solid rgba(255,255,255,0.06); background: rgba(255,255,255,0.03); color: white;" placeholder="e.g., effortless cool, main character energy">
+            </div>
+            
+            <!-- Loading -->
+            <div id="dress-me-loading" style="display: none; text-align: center; padding: 32px 0;">
+                <div class="loader" style="margin: 0 auto 16px;"></div>
+                <p style="color: var(--text-secondary); font-size: 14px;">Styling you up...</p>
+            </div>
+            
+            <!-- Results -->
+            <div id="dress-me-results" style="display: none;"></div>
+            
+            <!-- Buttons -->
+            <div id="dress-me-buttons" style="display: flex; gap: 12px;">
+                <button onclick="closeDressMeModal()" style="flex: 1; padding: 14px; border-radius: 12px; font-size: 14px; font-weight: 600; background: rgba(255,255,255,0.03); color: var(--text-secondary); border: 1px solid rgba(255,255,255,0.06); cursor: pointer;">Cancel</button>
+                <button onclick="getDressMeSuggestions()" id="dress-me-submit" style="flex: 1; padding: 14px; border-radius: 12px; font-size: 14px; font-weight: 700; background: linear-gradient(135deg, var(--pink) 0%, var(--peach) 100%); color: #000; border: none; cursor: pointer;">Suggest Outfits</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         // State
         let selectedOccasion = '';
         let currentFile = null;
         let currentImageData = null;
         let lastAnalysis = null;
+        let currentWeather = null;
 
         // Elements
         const photoInput = document.getElementById('photo-input');
@@ -596,6 +879,82 @@
         const resultsCard = document.getElementById('results-card');
         const errorState = document.getElementById('error-state');
         const occasionDrawer = document.getElementById('occasion-drawer');
+
+        // Weather functions
+        async function loadWeather() {
+            try {
+                // Try to get user's location
+                let lat = null, lon = null;
+                
+                if (navigator.geolocation) {
+                    const position = await new Promise((resolve, reject) => {
+                        navigator.geolocation.getCurrentPosition(resolve, reject, {
+                            timeout: 5000,
+                            enableHighAccuracy: false
+                        });
+                    }).catch(() => null);
+                    
+                    if (position) {
+                        lat = position.coords.latitude;
+                        lon = position.coords.longitude;
+                    }
+                }
+                
+                const url = lat && lon ? `/weather?lat=${lat}&lon=${lon}` : '/weather';
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                if (data.status === 'success' || data.status === 'fallback') {
+                    currentWeather = data;
+                    displayWeather(data);
+                }
+            } catch (error) {
+                console.log('Weather load failed:', error);
+            }
+        }
+        
+        function displayWeather(data) {
+            const widget = document.getElementById('weather-widget');
+            const icon = document.getElementById('weather-icon');
+            const temp = document.getElementById('weather-temp');
+            const desc = document.getElementById('weather-desc');
+            const highLow = document.getElementById('weather-high-low');
+            const tips = document.getElementById('weather-tips');
+            
+            // Weather icons based on conditions
+            const weatherIcons = {
+                'sunny': '☀️',
+                'clear': '🌙',
+                'cloudy': '☁️',
+                'rainy': '🌧️',
+                'stormy': '⛈️',
+                'snowy': '🌨️',
+                'foggy': '🌫️',
+                'default': '🌤️'
+            };
+            
+            let weatherIcon = weatherIcons.default;
+            if (data.is_sunny) weatherIcon = data.temperature > 25 ? '☀️' : '🌤️';
+            if (data.is_rainy) weatherIcon = '🌧️';
+            if (data.weather_code >= 95) weatherIcon = '⛈️';
+            if (data.weather_code >= 71 && data.weather_code < 80) weatherIcon = '🌨️';
+            if (data.weather_code >= 45 && data.weather_code < 50) weatherIcon = '🌫️';
+            if (data.weather_code >= 2 && data.weather_code <= 3) weatherIcon = '☁️';
+            
+            icon.textContent = weatherIcon;
+            temp.textContent = `${data.temperature}°C`;
+            desc.textContent = data.description;
+            highLow.textContent = `H: ${Math.round(data.daily_high || data.temperature)}° L: ${Math.round(data.daily_low || data.temperature)}°`;
+            
+            // Display outfit tips
+            if (data.outfit_tips && data.outfit_tips.length > 0) {
+                tips.innerHTML = data.outfit_tips.slice(0, 3).map(tip => 
+                    `<span style="padding: 6px 10px; border-radius: 8px; font-size: 11px; background: rgba(255,90,143,0.1); color: var(--pink); border: 1px solid rgba(255,90,143,0.2);">${tip}</span>`
+                ).join('');
+            }
+            
+            widget.style.display = 'block';
+        }
 
         // View switching
         function switchView(view) {
@@ -679,8 +1038,17 @@
         }
 
         document.addEventListener('click', function(e) {
+            // Close main occasion drawer
             if (!occasionDrawer.contains(e.target) && !occasionBtn.contains(e.target)) {
                 closeOccasionDrawer();
+            }
+            // Close dress-me occasion grid
+            const dressMeOccasionBtn = document.getElementById('dress-me-occasion-btn');
+            const dressMeOccasionGrid = document.getElementById('dress-me-occasion-grid');
+            if (dressMeOccasionGrid && dressMeOccasionBtn && 
+                !dressMeOccasionGrid.contains(e.target) && !dressMeOccasionBtn.contains(e.target)) {
+                dressMeOccasionGrid.style.display = 'none';
+                document.getElementById('dress-me-occasion-arrow').style.transform = 'rotate(0deg)';
             }
         });
 
@@ -794,7 +1162,89 @@
                 itemsSection.style.display = 'none';
             }
 
+            // Show wardrobe notification
+            const wardrobeNotification = document.getElementById('wardrobe-notification');
+            if (data.wardrobe_added && data.wardrobe_added.length > 0) {
+                wardrobeNotification.style.display = 'block';
+                const count = data.wardrobe_added.length;
+                document.getElementById('wardrobe-added-text').textContent = 
+                    `${count} item${count > 1 ? 's' : ''} added: ${data.wardrobe_added.map(i => escapeHtml(i)).join(', ')}`;
+            } else {
+                wardrobeNotification.style.display = 'none';
+            }
+
+            // Setup tags section
+            setupTagsSection(data);
+
             resultsCard.style.display = 'block';
+        }
+
+        // Tags functionality
+        function setupTagsSection(data) {
+            const tagsDisplay = document.getElementById('tags-display');
+            const tagsInput = document.getElementById('tags-input');
+            const saveBtn = document.getElementById('save-tags-btn');
+            
+            // Show input field
+            tagsInput.style.display = 'block';
+            saveBtn.style.display = 'none';
+            
+            // If there are existing tags, display them
+            if (data.tags && data.tags.length > 0) {
+                tagsDisplay.innerHTML = data.tags.map(tag => 
+                    `<span style="padding: 6px 12px; border-radius: 20px; font-size: 12px; background: rgba(255,90,143,0.15); color: var(--pink); border: 1px solid rgba(255,90,143,0.3);">#${escapeHtml(tag)}</span>`
+                ).join('');
+                tagsInput.value = data.tags.join(', ');
+            } else {
+                tagsDisplay.innerHTML = '<span style="font-size: 12px; color: var(--text-muted);">No tags yet. Add some!</span>';
+                tagsInput.value = '';
+            }
+        }
+        
+        function showSaveTagsBtn() {
+            document.getElementById('save-tags-btn').style.display = 'block';
+        }
+        
+        async function saveTags() {
+            if (!lastAnalysis || !lastAnalysis.fit_id) {
+                showToast('Analyze a fit first!', 'error');
+                return;
+            }
+            
+            const tagsInput = document.getElementById('tags-input');
+            const tags = tagsInput.value.trim();
+            
+            if (!tags) {
+                showToast('Enter at least one tag', 'error');
+                return;
+            }
+            
+            try {
+                const formData = new FormData();
+                formData.append('tags', tags);
+                
+                const response = await fetch(`/update-tags/${lastAnalysis.fit_id}`, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    // Update display
+                    const tagsDisplay = document.getElementById('tags-display');
+                    if (data.tags.length > 0) {
+                        tagsDisplay.innerHTML = data.tags.map(tag => 
+                            `<span style="padding: 6px 12px; border-radius: 20px; font-size: 12px; background: rgba(255,90,143,0.15); color: var(--pink); border: 1px solid rgba(255,90,143,0.3);">#${escapeHtml(tag)}</span>`
+                        ).join('');
+                    }
+                    document.getElementById('save-tags-btn').style.display = 'none';
+                    showToast('Tags saved! 🏷️');
+                }
+            } catch (error) {
+                console.error('Save tags error:', error);
+                showToast('Failed to save tags', 'error');
+            }
         }
 
         async function saveToCloset() {
@@ -826,30 +1276,410 @@
             }
         }
 
+        // Global closet data for filtering
+        let allClosetItems = [];
+        let currentClosetFilter = 'all';
+        let gapAnalysisData = null;
+
         async function loadCloset() {
             const grid = document.getElementById('closet-grid');
             const empty = document.getElementById('closet-empty');
+            const countEl = document.getElementById('closet-count');
+            const insightsCard = document.getElementById('wardrobe-insights');
 
             try {
+                // Load closet items
                 const response = await fetch('/closet');
                 const data = await response.json();
 
                 if (data.status === 'success' && data.data && data.data.length > 0) {
-                    empty.style.display = 'none';
-                    grid.innerHTML = data.data.map(item => `
-                        <div class="glass" style="border-radius: 16px; overflow: hidden;">
-                            <img src="${escapeHtml(item.image_url)}" style="width: 100%; aspect-ratio: 1; object-fit: cover;">
-                            <div style="padding: 12px;">
-                                <p style="font-size: 12px; font-weight: 600; text-align: center; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${escapeHtml(item.item_name)}</p>
-                            </div>
-                        </div>
-                    `).join('');
+                    allClosetItems = data.data;
+                    renderClosetItems(currentClosetFilter);
+                    
+                    // Load gap analysis
+                    loadGapAnalysis();
                 } else {
+                    allClosetItems = [];
                     grid.innerHTML = '';
                     empty.style.display = 'block';
+                    countEl.textContent = '';
+                    insightsCard.style.display = 'none';
                 }
             } catch (error) {
                 console.error('Load closet error:', error);
+            }
+        }
+
+        async function loadGapAnalysis() {
+            try {
+                const response = await fetch('/gap-analysis');
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    gapAnalysisData = data;
+                    
+                    // Update insights card
+                    document.getElementById('completeness-score').textContent = `${data.completeness_score}%`;
+                    document.getElementById('one-purchase-tip').textContent = data.one_purchase_tip || '';
+                    document.getElementById('wardrobe-insights').style.display = 'block';
+                }
+            } catch (error) {
+                console.error('Gap analysis error:', error);
+            }
+        }
+
+        function openGapAnalysisModal() {
+            if (!gapAnalysisData) return;
+            
+            // Create modal content
+            let html = `
+                <div style="text-align: center; margin-bottom: 24px;">
+                    <p style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px;">Wardrobe Completeness</p>
+                    <p style="font-size: 48px; font-weight: 700;" class="text-brand">${gapAnalysisData.completeness_score}%</p>
+                    <p style="font-size: 12px; color: var(--text-muted);">${gapAnalysisData.total_items} items total</p>
+                </div>
+            `;
+            
+            // Category breakdown
+            if (gapAnalysisData.category_counts) {
+                html += `<div style="margin-bottom: 20px;"><p style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 12px;">Category Breakdown</p><div style="display: flex; flex-wrap: wrap; gap: 8px;">`;
+                const emojis = {tops: '👕', bottoms: '👖', footwear: '👟', outerwear: '🧥', accessories: '⌚'};
+                for (const [cat, count] of Object.entries(gapAnalysisData.category_counts)) {
+                    html += `<span style="padding: 8px 12px; border-radius: 8px; font-size: 12px; background: rgba(255,255,255,0.03);">${emojis[cat] || '👔'} ${cat}: ${count}</span>`;
+                }
+                html += `</div></div>`;
+            }
+            
+            // Gaps
+            if (gapAnalysisData.gaps && gapAnalysisData.gaps.length > 0) {
+                html += `<div style="margin-bottom: 20px;"><p style="font-size: 11px; color: var(--pink); text-transform: uppercase; margin-bottom: 12px;">🛒 Missing Items</p>`;
+                gapAnalysisData.gaps.forEach(gap => {
+                    html += `
+                        <div class="glass" style="border-radius: 12px; padding: 12px; margin-bottom: 8px; border-left: 2px solid var(--pink);">
+                            <p style="font-size: 14px; font-weight: 600;">${escapeHtml(gap.item)}</p>
+                            <p style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">${escapeHtml(gap.reason)}</p>
+                            <p style="font-size: 10px; color: var(--text-muted); margin-top: 4px;">For: ${gap.occasions?.join(', ') || 'various occasions'}</p>
+                        </div>
+                    `;
+                });
+                html += `</div>`;
+            }
+            
+            // Strengths
+            if (gapAnalysisData.strengths && gapAnalysisData.strengths.length > 0) {
+                html += `<div><p style="font-size: 11px; color: #34d399; text-transform: uppercase; margin-bottom: 12px;">✅ Wardrobe Strengths</p><ul style="margin: 0; padding-left: 20px;">`;
+                gapAnalysisData.strengths.forEach(s => {
+                    html += `<li style="font-size: 13px; color: var(--text-secondary); margin-bottom: 6px;">${escapeHtml(s)}</li>`;
+                });
+                html += `</ul></div>`;
+            }
+            
+            // Show in a new modal or alert
+            const modal = document.createElement('div');
+            modal.id = 'gap-modal';
+            modal.style.cssText = 'position: fixed; inset: 0; z-index: 400; background: rgba(0,0,0,0.85); backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: center; padding: 20px;';
+            modal.onclick = (e) => { if (e.target === modal) modal.remove(); };
+            modal.innerHTML = `
+                <div class="glass-card" style="border-radius: 24px; padding: 24px; max-width: 400px; max-height: 80vh; overflow-y: auto;" onclick="event.stopPropagation()">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                        <h3 style="font-size: 18px; font-weight: 700;">📊 Wardrobe Insights</h3>
+                        <button onclick="this.closest('#gap-modal').remove()" style="width: 28px; height: 28px; border-radius: 50%; background: rgba(255,255,255,0.05); border: none; color: var(--text-muted); cursor: pointer; font-size: 18px;">×</button>
+                    </div>
+                    ${html}
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
+
+        function filterCloset(category) {
+            currentClosetFilter = category;
+            
+            // Update button styles
+            document.querySelectorAll('.closet-filter-btn').forEach(btn => {
+                if (btn.dataset.filter === category) {
+                    btn.style.background = 'linear-gradient(135deg, var(--pink) 0%, var(--peach) 100%)';
+                    btn.style.color = '#000';
+                    btn.style.border = 'none';
+                    btn.classList.add('active');
+                } else {
+                    btn.style.background = 'rgba(255,255,255,0.03)';
+                    btn.style.color = 'var(--text-secondary)';
+                    btn.style.border = '1px solid rgba(255,255,255,0.06)';
+                    btn.classList.remove('active');
+                }
+            });
+            
+            renderClosetItems(category);
+        }
+
+        function renderClosetItems(filter) {
+            const grid = document.getElementById('closet-grid');
+            const empty = document.getElementById('closet-empty');
+            const countEl = document.getElementById('closet-count');
+            
+            // Filter items
+            let filteredItems = filter === 'all' 
+                ? allClosetItems 
+                : allClosetItems.filter(item => item.category?.toLowerCase() === filter);
+            
+            // Update count
+            if (filter === 'all') {
+                countEl.textContent = `${allClosetItems.length} item${allClosetItems.length !== 1 ? 's' : ''} total`;
+            } else {
+                countEl.textContent = `${filteredItems.length} ${filter} item${filteredItems.length !== 1 ? 's' : ''}`;
+            }
+            
+            if (filteredItems.length > 0) {
+                empty.style.display = 'none';
+                grid.innerHTML = filteredItems.map(item => {
+                    // Category emoji icons
+                    const catEmoji = {
+                        'tops': '👕',
+                        'bottoms': '👖',
+                        'footwear': '👟',
+                        'outerwear': '🧥',
+                        'accessories': '⌚',
+                        'default': '👔'
+                    };
+                    const emoji = catEmoji[item.category?.toLowerCase()] || catEmoji['default'];
+                    
+                    // Check if image is valid (not just a placeholder or missing)
+                    const hasRealImage = item.image_url && !item.image_url.includes('placeholder');
+                    
+                    const imgHtml = hasRealImage 
+                        ? `<img src="${escapeHtml(item.image_url)}" style="width: 100%; aspect-ratio: 1; object-fit: cover; background: linear-gradient(135deg, rgba(255,255,255,0.02) 0%, rgba(255,255,255,0.05) 100%);" onerror="this.outerHTML='<div style=\\'width:100%;aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(135deg, rgba(255,90,143,0.05) 0%, rgba(255,179,167,0.05) 100%);font-size:48px;\\'><span>${emoji}</span><button onclick=\\'generateItemImage(\\"${item.id}\\")\\' style=\\'margin-top:8px;padding:4px 8px;border-radius:6px;font-size:10px;background:rgba(255,90,143,0.2);color:var(--pink);border:1px solid rgba(255,90,143,0.3);cursor:pointer;\\'>✨ Generate</button></div>'">`
+                        : `<div style="width: 100%; aspect-ratio: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; background: linear-gradient(135deg, rgba(255,90,143,0.05) 0%, rgba(255,179,167,0.05) 100%); position: relative;">
+                            <span style="font-size: 48px; opacity: 0.8;">${emoji}</span>
+                            <button onclick="generateItemImage('${item.id}')" style="position: absolute; bottom: 8px; padding: 4px 10px; border-radius: 8px; font-size: 10px; font-weight: 600; background: rgba(255,90,143,0.2); color: var(--pink); border: 1px solid rgba(255,90,143,0.3); cursor: pointer;">✨ Generate Image</button>
+                           </div>`;
+                    
+                    return `
+                    <div class="glass closet-item" data-category="${item.category?.toLowerCase() || 'other'}" style="border-radius: 16px; overflow: hidden; position: relative;">
+                        <div style="position: absolute; top: 8px; right: 8px; z-index: 10; display: flex; gap: 4px;">
+                            <button onclick="openTryOnModal('${item.id}', '${escapeHtml(item.item_name)}', '${item.category || ''}', '${item.image_url || ''}')" style="width: 28px; height: 28px; border-radius: 50%; background: rgba(255,90,143,0.3); backdrop-filter: blur(10px); border: 1px solid rgba(255,90,143,0.3); color: var(--pink); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 12px;" title="Virtual Try-On">👗</button>
+                            <button onclick="openEditModal('${item.id}', '${escapeHtml(item.item_name)}', '${item.category || ''}', '${item.color || ''}')" style="width: 28px; height: 28px; border-radius: 50%; background: rgba(0,0,0,0.7); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); color: #a0a3b8; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 12px;">✎</button>
+                            <button onclick="removeWardrobeItem('${item.id}', this)" style="width: 28px; height: 28px; border-radius: 50%; background: rgba(0,0,0,0.7); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); color: #ff5a8f; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px;">×</button>
+                        </div>
+                        ${imgHtml}
+                        <div style="padding: 12px;">
+                            <p style="font-size: 13px; font-weight: 600; text-align: center; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${escapeHtml(item.item_name)}</p>
+                            ${item.category ? `<p style="font-size: 10px; color: var(--text-muted); text-align: center; margin-top: 4px; text-transform: capitalize;">${escapeHtml(item.category)}</p>` : ''}
+                            ${item.color ? `<p style="font-size: 9px; color: var(--text-secondary); text-align: center; margin-top: 2px; opacity: 0.8;">${escapeHtml(item.color)}</p>` : ''}
+                        </div>
+                    </div>
+                `}).join('');
+            } else {
+                grid.innerHTML = '';
+                empty.style.display = 'block';
+                empty.querySelector('p').textContent = filter === 'all' ? 'Your closet is empty rn' : `No ${filter} items yet`;
+            }
+        }
+
+        // Edit item functions
+        function openEditModal(itemId, itemName, category, color) {
+            document.getElementById('edit-item-id').value = itemId;
+            document.getElementById('edit-item-name').value = itemName;
+            document.getElementById('edit-item-category').value = category.toLowerCase();
+            document.getElementById('edit-item-color').value = color;
+            document.getElementById('edit-item-modal').style.display = 'block';
+        }
+
+        function closeEditModal(event) {
+            if (event && event.target !== document.getElementById('edit-item-modal')) return;
+            document.getElementById('edit-item-modal').style.display = 'none';
+        }
+
+        async function saveItemEdit() {
+            const itemId = document.getElementById('edit-item-id').value;
+            const itemName = document.getElementById('edit-item-name').value.trim();
+            const category = document.getElementById('edit-item-category').value;
+            const color = document.getElementById('edit-item-color').value.trim();
+            
+            if (!itemName) {
+                alert('Item name is required');
+                return;
+            }
+            
+            try {
+                const formData = new FormData();
+                formData.append('item_name', itemName);
+                if (category) formData.append('category', category);
+                if (color) formData.append('color', color);
+                
+                const response = await fetch(`/closet/${itemId}`, {
+                    method: 'PUT',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    // Update local data
+                    const itemIndex = allClosetItems.findIndex(i => i.id === itemId);
+                    if (itemIndex !== -1) {
+                        allClosetItems[itemIndex].item_name = itemName;
+                        allClosetItems[itemIndex].category = category;
+                        allClosetItems[itemIndex].color = color;
+                    }
+                    // Re-render
+                    renderClosetItems(currentClosetFilter);
+                    closeEditModal();
+                    showToast('Item updated!');
+                } else {
+                    alert('Failed to update item');
+                }
+            } catch (error) {
+                console.error('Edit error:', error);
+                alert('Failed to update item');
+            }
+        }
+
+        async function removeWardrobeItem(itemId, btn) {
+            if (!confirm('Remove this item from wardrobe?')) return;
+            
+            try {
+                const response = await fetch(`/closet/${itemId}`, { method: 'DELETE' });
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    // Remove from UI
+                    btn.closest('.glass').remove();
+                    // Check if empty now
+                    const grid = document.getElementById('closet-grid');
+                    if (!grid.innerHTML.trim()) {
+                        document.getElementById('closet-empty').style.display = 'block';
+                    }
+                }
+            } catch (error) {
+                console.error('Remove error:', error);
+            }
+        }
+
+        // Generate AI image for closet item
+        async function generateItemImage(itemId) {
+            const item = allClosetItems.find(i => i.id === itemId);
+            if (!item) return;
+            
+            showToast('Generating image... ✨');
+            
+            try {
+                const formData = new FormData();
+                formData.append('item_name', item.item_name);
+                formData.append('category', item.category || '');
+                formData.append('color', item.color || '');
+                formData.append('generate_image', 'true');
+                
+                const response = await fetch(`/generate-item-image/${itemId}`, {
+                    method: 'POST'
+                });
+                
+                const data = await response.json();
+                
+                if (data.status === 'success' && data.image_url) {
+                    // Update the item in local cache
+                    const itemIndex = allClosetItems.findIndex(i => i.id === itemId);
+                    if (itemIndex !== -1) {
+                        allClosetItems[itemIndex].image_url = data.image_url;
+                    }
+                    // Re-render
+                    renderClosetItems(currentClosetFilter);
+                    showToast('Image generated! ✨');
+                } else {
+                    showToast(data.detail || 'Failed to generate image', 'error');
+                }
+            } catch (error) {
+                console.error('Generate image error:', error);
+                showToast('Failed to generate image: ' + error.message, 'error');
+            }
+        }
+
+        // Virtual Try-On functions
+        function openTryOnModal(itemId, itemName, category, imageUrl) {
+            document.getElementById('try-on-item-id').value = itemId;
+            document.getElementById('try-on-item-name').textContent = itemName;
+            document.getElementById('try-on-item-category').textContent = category || 'Clothing item';
+            document.getElementById('try-on-style').value = '';
+            document.getElementById('try-on-result').style.display = 'none';
+            document.getElementById('try-on-loading').style.display = 'none';
+            document.getElementById('try-on-buttons').style.display = 'flex';
+            
+            // Set the item preview
+            const catEmoji = {
+                'tops': '👕',
+                'bottoms': '👖',
+                'footwear': '👟',
+                'outerwear': '🧥',
+                'accessories': '⌚',
+                'default': '👔'
+            };
+            const emoji = catEmoji[category?.toLowerCase()] || catEmoji['default'];
+            
+            const imageDiv = document.getElementById('try-on-item-image');
+            if (imageUrl) {
+                imageDiv.innerHTML = `<img src="${imageUrl}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;">`;
+            } else {
+                imageDiv.innerHTML = emoji;
+            }
+            
+            document.getElementById('try-on-modal').style.display = 'block';
+        }
+
+        function closeTryOnModal(event) {
+            if (event && event.target !== document.getElementById('try-on-modal')) return;
+            document.getElementById('try-on-modal').style.display = 'none';
+        }
+
+        async function generateTryOn() {
+            const itemId = document.getElementById('try-on-item-id').value;
+            const styleNote = document.getElementById('try-on-style').value.trim();
+            
+            if (!itemId) {
+                showToast('Please select an item first', 'error');
+                return;
+            }
+            
+            // Show loading
+            document.getElementById('try-on-loading').style.display = 'block';
+            document.getElementById('try-on-buttons').style.display = 'none';
+            document.getElementById('try-on-result').style.display = 'none';
+            
+            try {
+                const formData = new FormData();
+                formData.append('item_id', itemId);
+                if (styleNote) formData.append('style_note', styleNote);
+                
+                const response = await fetch('/virtual-try-on', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (data.status === 'success' && data.image_url) {
+                    const resultDiv = document.getElementById('try-on-result');
+                    resultDiv.innerHTML = `
+                        <div style="text-align: center;">
+                            <img src="${data.image_url}" style="width: 100%; max-width: 300px; border-radius: 16px; margin-bottom: 12px;">
+                            <p style="font-size: 14px; color: var(--text-secondary);">${data.message || 'Here\'s your look!'}</p>
+                        </div>
+                    `;
+                    resultDiv.style.display = 'block';
+                    document.getElementById('try-on-buttons').innerHTML = `
+                        <button onclick="closeTryOnModal()" style="flex: 1; padding: 14px; border-radius: 12px; font-size: 14px; font-weight: 600; background: rgba(255,255,255,0.03); color: var(--text-secondary); border: 1px solid rgba(255,255,255,0.06); cursor: pointer;">Close</button>
+                        <button onclick="document.getElementById('try-on-loading').style.display='none';document.getElementById('try-on-result').style.display='none';document.getElementById('try-on-buttons').style.display='flex';" style="flex: 1; padding: 14px; border-radius: 12px; font-size: 14px; font-weight: 700; background: linear-gradient(135deg, var(--pink) 0%, var(--peach) 100%); color: #000; border: none; cursor: pointer;">Try Another Style</button>
+                    `;
+                    document.getElementById('try-on-buttons').style.display = 'flex';
+                } else {
+                    const errorMsg = data.detail || data.message || 'Failed to generate try-on';
+                    showToast(errorMsg, 'error');
+                    document.getElementById('try-on-buttons').style.display = 'flex';
+                }
+            } catch (error) {
+                console.error('Try-on error:', error);
+                showToast('Try-on failed: ' + error.message, 'error');
+                document.getElementById('try-on-buttons').style.display = 'flex';
+            } finally {
+                document.getElementById('try-on-loading').style.display = 'none';
             }
         }
 
@@ -911,8 +1741,67 @@
                         </div>
                     `).join('');
                 }
+                
+                // Load saved fits
+                loadSavedFits();
+                
+                // Load AI Style Profile
+                loadStyleProfile();
             } catch (error) {
                 console.error('Load profile error:', error);
+            }
+        }
+        
+        // AI Style Learning
+        async function loadStyleProfile() {
+            try {
+                const response = await fetch('/style-profile');
+                const data = await response.json();
+                
+                if (data.status === 'success' && data.profile) {
+                    const profile = data.profile;
+                    const section = document.getElementById('style-learning-section');
+                    
+                    // Only show if user has enough data
+                    if (profile.total_outfits >= 1) {
+                        section.style.display = 'block';
+                        
+                        // Style Persona
+                        document.getElementById('style-persona').textContent = profile.style_persona || 'Style Explorer';
+                        
+                        // Preferred Colors
+                        const colorsDiv = document.getElementById('preferred-colors');
+                        if (profile.preferred_colors && profile.preferred_colors.length > 0) {
+                            colorsDiv.innerHTML = profile.preferred_colors.map(c => 
+                                `<span style="padding: 6px 12px; border-radius: 20px; font-size: 12px; background: rgba(255,255,255,0.05); color: var(--text-secondary); border: 1px solid rgba(255,255,255,0.1);">${escapeHtml(c.color)} (${c.count})</span>`
+                            ).join('');
+                        } else {
+                            colorsDiv.innerHTML = '<span style="font-size: 12px; color: var(--text-muted);">Add items with colors to your closet</span>';
+                        }
+                        
+                        // Preferred Occasions
+                        const occasionsDiv = document.getElementById('preferred-occasions');
+                        if (profile.preferred_occasions && profile.preferred_occasions.length > 0) {
+                            occasionsDiv.innerHTML = profile.preferred_occasions.map(o => 
+                                `<span style="padding: 6px 12px; border-radius: 20px; font-size: 12px; background: rgba(255,90,143,0.1); color: var(--pink); border: 1px solid rgba(255,90,143,0.2);">${escapeHtml(o.occasion)} (${o.avg_score}%)</span>`
+                            ).join('');
+                        } else {
+                            occasionsDiv.innerHTML = '<span style="font-size: 12px; color: var(--text-muted);">Analyze more outfits to see patterns</span>';
+                        }
+                        
+                        // AI Recommendations
+                        const recsDiv = document.getElementById('ai-recommendations');
+                        if (profile.recommendations && profile.recommendations.length > 0) {
+                            recsDiv.innerHTML = profile.recommendations.map(r => 
+                                `<p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 6px; padding-left: 12px; border-left: 2px solid var(--peach);">${escapeHtml(r)}</p>`
+                            ).join('');
+                        } else {
+                            recsDiv.innerHTML = '<p style="font-size: 13px; color: var(--text-muted);">Keep analyzing fits to get personalized tips!</p>';
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error('Load style profile error:', error);
             }
         }
 
@@ -921,6 +1810,307 @@
             errorState.style.display = 'block';
             loadingState.style.display = 'none';
             resultsCard.style.display = 'none';
+        }
+
+        // Toast notification system
+        function showToast(message, type = 'success') {
+            // Remove existing toast
+            const existingToast = document.getElementById('toast-notification');
+            if (existingToast) existingToast.remove();
+            
+            // Create toast
+            const toast = document.createElement('div');
+            toast.id = 'toast-notification';
+            toast.style.cssText = `
+                position: fixed;
+                bottom: 100px;
+                left: 50%;
+                transform: translateX(-50%);
+                padding: 12px 24px;
+                border-radius: 12px;
+                font-size: 13px;
+                font-weight: 600;
+                z-index: 1000;
+                animation: fadeIn 0.3s ease;
+                ${type === 'success' 
+                    ? 'background: linear-gradient(135deg, #34d399 0%, #10b981 100%); color: #000;' 
+                    : 'background: linear-gradient(135deg, #ff5a8f 0%, #ff6b6b 100%); color: #fff;'}
+            `;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            // Remove after 2.5 seconds
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transition = 'opacity 0.3s ease';
+                setTimeout(() => toast.remove(), 300);
+            }, 2500);
+        }
+
+        // Favorite functionality
+        let isFavorited = false;
+        
+        async function toggleFavorite() {
+            if (!lastAnalysis || !lastAnalysis.fit_id) {
+                showToast('Analyze a fit first!', 'error');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`/toggle-favorite/${lastAnalysis.fit_id}`, {
+                    method: 'POST'
+                });
+                
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    isFavorited = data.is_favorite;
+                    updateFavoriteButton();
+                    showToast(isFavorited ? 'Added to saved fits! ❤️' : 'Removed from saved fits');
+                }
+            } catch (error) {
+                console.error('Toggle favorite error:', error);
+                showToast('Failed to save fit', 'error');
+            }
+        }
+        
+        function updateFavoriteButton() {
+            const icon = document.getElementById('favorite-icon');
+            const text = document.getElementById('favorite-text');
+            const btn = document.getElementById('favorite-btn');
+            
+            if (isFavorited) {
+                icon.textContent = '❤️';
+                text.textContent = 'Saved';
+                btn.style.borderColor = 'rgba(255,90,143,0.3)';
+                btn.style.background = 'rgba(255,90,143,0.1)';
+            } else {
+                icon.textContent = '🤍';
+                text.textContent = 'Save Fit';
+                btn.style.borderColor = '';
+                btn.style.background = '';
+            }
+        }
+        
+        async function loadSavedFits() {
+            try {
+                const response = await fetch('/favorites');
+                const data = await response.json();
+                
+                if (data.status === 'success' && data.favorites.length > 0) {
+                    const section = document.getElementById('saved-fits-section');
+                    const grid = document.getElementById('saved-fits-grid');
+                    const count = document.getElementById('saved-fits-count');
+                    
+                    count.textContent = `${data.count} saved`;
+                    
+                    grid.innerHTML = data.favorites.slice(0, 4).map(fit => `
+                        <div class="glass" style="border-radius: 12px; padding: 12px; border-left: 2px solid var(--pink);">
+                            <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 4px;">${fit.occasion || 'Outfit'}</p>
+                            <p style="font-size: 18px; font-weight: 700;" class="text-brand">${fit.occasion_match || 0}%</p>
+                            <p style="font-size: 10px; color: var(--text-secondary); margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${fit.vibe_check || 'Great fit!'}</p>
+                        </div>
+                    `).join('');
+                    
+                    section.style.display = 'block';
+                }
+            } catch (error) {
+                console.error('Load saved fits error:', error);
+            }
+        }
+
+        // Share roast functionality
+        function shareRoast() {
+            const roastText = document.getElementById('roast-text').textContent;
+            const shareText = `🔥 FLAUNT.FIT Roast:\n\n"${roastText}"\n\n— Get roasted at flaunt.fit`;
+            
+            // Try native share first (mobile)
+            if (navigator.share) {
+                navigator.share({
+                    title: 'My FLAUNT Roast',
+                    text: shareText
+                }).catch(() => {
+                    // Fallback to clipboard
+                    copyToClipboard(shareText);
+                });
+            } else {
+                // Fallback to clipboard
+                copyToClipboard(shareText);
+            }
+        }
+
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                showToast('Roast copied to clipboard! 🔥');
+            }).catch(() => {
+                // Fallback for older browsers
+                const textarea = document.createElement('textarea');
+                textarea.value = text;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+                showToast('Roast copied to clipboard! 🔥');
+            });
+        }
+
+        // Dress Me functions
+        let dressMeSelectedOccasion = '';
+        
+        function openDressMeModal() {
+            document.getElementById('dress-me-modal').style.display = 'block';
+            document.getElementById('dress-me-results').style.display = 'none';
+            document.getElementById('dress-me-loading').style.display = 'none';
+            document.getElementById('dress-me-buttons').style.display = 'flex';
+            // Reset custom selector
+            dressMeSelectedOccasion = '';
+            document.getElementById('dress-me-occasion').value = '';
+            document.getElementById('dress-me-occasion-text').textContent = 'Select occasion';
+            document.getElementById('dress-me-occasion-text').style.color = 'var(--text-muted)';
+            document.getElementById('dress-me-occasion-grid').style.display = 'none';
+            document.getElementById('dress-me-occasion-arrow').style.transform = 'rotate(0deg)';
+            // Clear selected state from all buttons
+            document.querySelectorAll('.dress-me-occ-btn').forEach(btn => btn.classList.remove('selected'));
+            document.getElementById('dress-me-vibe').value = '';
+        }
+
+        function closeDressMeModal(event) {
+            if (event && event.target !== document.getElementById('dress-me-modal')) return;
+            document.getElementById('dress-me-modal').style.display = 'none';
+        }
+        
+        function toggleDressMeOccasionGrid() {
+            const grid = document.getElementById('dress-me-occasion-grid');
+            const arrow = document.getElementById('dress-me-occasion-arrow');
+            if (grid.style.display === 'none') {
+                grid.style.display = 'block';
+                arrow.style.transform = 'rotate(180deg)';
+            } else {
+                grid.style.display = 'none';
+                arrow.style.transform = 'rotate(0deg)';
+            }
+        }
+        
+        function selectDressMeOccasion(occasion) {
+            dressMeSelectedOccasion = occasion;
+            document.getElementById('dress-me-occasion').value = occasion;
+            document.getElementById('dress-me-occasion-text').textContent = occasion;
+            document.getElementById('dress-me-occasion-text').style.color = 'var(--pink)';
+            
+            // Update button states
+            document.querySelectorAll('.dress-me-occ-btn').forEach(btn => btn.classList.remove('selected'));
+            event.target.classList.add('selected');
+            
+            // Hide grid after selection
+            document.getElementById('dress-me-occasion-grid').style.display = 'none';
+            document.getElementById('dress-me-occasion-arrow').style.transform = 'rotate(0deg)';
+        }
+
+        async function getDressMeSuggestions() {
+            const occasion = document.getElementById('dress-me-occasion').value;
+            const vibe = document.getElementById('dress-me-vibe').value.trim();
+            
+            if (!occasion) {
+                showToast('Please select an occasion', 'error');
+                return;
+            }
+            
+            // Show loading
+            document.getElementById('dress-me-loading').style.display = 'block';
+            document.getElementById('dress-me-buttons').style.display = 'none';
+            document.getElementById('dress-me-results').style.display = 'none';
+            
+            try {
+                const formData = new FormData();
+                formData.append('occasion', occasion);
+                if (vibe) formData.append('vibe_goal', vibe);
+                
+                const response = await fetch('/dress-me/', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    displayDressMeResults(data);
+                } else {
+                    showToast(data.message || 'Failed to get suggestions', 'error');
+                }
+            } catch (error) {
+                console.error('Dress Me error:', error);
+                showToast('Something went wrong', 'error');
+            } finally {
+                document.getElementById('dress-me-loading').style.display = 'none';
+            }
+        }
+
+        function displayDressMeResults(data) {
+            const resultsDiv = document.getElementById('dress-me-results');
+            
+            if (!data.outfits || data.outfits.length === 0) {
+                resultsDiv.innerHTML = `
+                    <div style="text-align: center; padding: 24px;">
+                        <p style="color: var(--text-muted); font-size: 14px;">${data.message || 'Add more items to your closet first!'}</p>
+                    </div>
+                `;
+                resultsDiv.style.display = 'block';
+                document.getElementById('dress-me-buttons').style.display = 'flex';
+                document.getElementById('dress-me-submit').textContent = 'Try Again';
+                return;
+            }
+            
+            let html = `
+                <div style="margin-bottom: 16px;">
+                    <p style="font-size: 11px; color: var(--text-muted);">Based on ${data.wardrobe_count} items in your closet</p>
+                </div>
+            `;
+            
+            // Outfit cards
+            data.outfits.forEach((outfit, index) => {
+                html += `
+                    <div class="glass-card" style="border-radius: 16px; padding: 16px; margin-bottom: 12px; border-left: 3px solid var(--pink);">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                            <h4 style="font-size: 14px; font-weight: 700;">${escapeHtml(outfit.name)}</h4>
+                            <span style="font-size: 12px; font-weight: 700; color: var(--gold);">${outfit.style_rating}/10</span>
+                        </div>
+                        <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px;">
+                            ${outfit.items.map(item => `<span style="padding: 6px 10px; border-radius: 8px; font-size: 11px; background: rgba(255,255,255,0.05); color: var(--text-secondary);">${escapeHtml(item)}</span>`).join('')}
+                        </div>
+                        <p style="font-size: 12px; color: var(--text-muted); font-style: italic;">"${escapeHtml(outfit.why_it_works)}"</p>
+                    </div>
+                `;
+            });
+            
+            // Missing item suggestion
+            if (data.missing_item) {
+                html += `
+                    <div class="glass" style="border-radius: 12px; padding: 14px; margin-bottom: 12px; border: 1px dashed rgba(255,90,143,0.3);">
+                        <p style="font-size: 11px; color: var(--pink); font-weight: 600;">💡 Missing item suggestion</p>
+                        <p style="font-size: 13px; color: var(--text-secondary); margin-top: 4px;">${escapeHtml(data.missing_item)}</p>
+                    </div>
+                `;
+            }
+            
+            // Tip
+            if (data.tip) {
+                html += `
+                    <div class="glass" style="border-radius: 12px; padding: 14px;">
+                        <p style="font-size: 11px; color: var(--gold); font-weight: 600;">✨ Stylist Tip</p>
+                        <p style="font-size: 13px; color: var(--text-secondary); margin-top: 4px;">${escapeHtml(data.tip)}</p>
+                    </div>
+                `;
+            }
+            
+            resultsDiv.innerHTML = html;
+            resultsDiv.style.display = 'block';
+            
+            // Update buttons
+            document.getElementById('dress-me-buttons').innerHTML = `
+                <button onclick="closeDressMeModal()" style="flex: 1; padding: 14px; border-radius: 12px; font-size: 14px; font-weight: 600; background: rgba(255,255,255,0.03); color: var(--text-secondary); border: 1px solid rgba(255,255,255,0.06); cursor: pointer;">Close</button>
+                <button onclick="getDressMeSuggestions()" style="flex: 1; padding: 14px; border-radius: 12px; font-size: 14px; font-weight: 700; background: linear-gradient(135deg, var(--pink) 0%, var(--peach) 100%); color: #000; border: none; cursor: pointer;">More Suggestions</button>
+            `;
+            document.getElementById('dress-me-buttons').style.display = 'flex';
         }
 
         function resetAnalysis() {
@@ -951,6 +2141,7 @@
         }
 
         updateAnalyzeButton();
+        loadWeather(); // Load weather on page load
     </script>
 </body>
 </html>
