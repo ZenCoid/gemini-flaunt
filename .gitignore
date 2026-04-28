@@ -1,0 +1,16 @@
+# Security API Keys and Secrets
+.env
+
+# Python Cache
+__pycache__
+.py[cod]
+$py.class
+
+# Virtual Environments
+venv
+env
+.venv
+
+# OS generated files
+.DS_Store
+Thumbs.db

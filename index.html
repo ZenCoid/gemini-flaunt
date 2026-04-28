@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>flaunt.fit | Built Different</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&display=swap');
+        body { background: #000; color: white; font-family: 'Plus Jakarta Sans', sans-serif; overflow-x: hidden; margin: 0; }
+        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(40px); border: 1px solid rgba(255,255,255,0.08); }
+        .nav-active { color: #f43f5e; border-bottom: 2px solid #f43f5e; } /* Rose Gold Theme */
+        .stat-bar { height: 6px; background: rgba(255,255,255,0.05); border-radius: 3px; overflow: hidden; margin-top: 6px; }
+        .stat-fill { height: 100%; background: #f43f5e; border-radius: 3px; transition: width 1s ease; } /* Rose Gold Theme */
+        .reason-text { font-size: 10px; color: #9ca3af; margin-top: 8px; display: none; line-height: 1.4; padding: 10px; background: rgba(255,255,255,0.03); border-radius: 10px; }
+        .pillar-row:active .reason-text { display: block; }
+        .occ-btn { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); padding: 1.25rem; border-radius: 1.5rem; font-size: 11px; font-weight: 700; }
+    </style>
+</head>
+<body class="pb-32">
+    <nav class="fixed bottom-0 inset-x-0 z-[100] glass flex justify-around p-6 border-t border-white/5">
+        <button onclick="toggleView('main')" id="nav-main" class="text-[9px] font-bold uppercase nav-active">Mirror</button>
+        <button onclick="toggleView('community')" id="nav-community" class="text-[9px] font-bold uppercase">Feed</button>
+        <button onclick="toggleView('closet')" id="nav-closet" class="text-[9px] font-bold uppercase">Closet</button>
+        <button onclick="toggleView('profile')" id="nav-profile" class="text-[9px] font-bold uppercase">DNA</button>
+    </nav>
+
+    <div class="max-w-md mx-auto p-6">
+        <div id="main-view" class="space-y-6">
+            <header class="py-4 flex justify-between items-center">
+                <h1 class="text-2xl font-black italic text-rose-600">flaunt.fit</h1>
+                <label class="flex items-center gap-2 cursor-pointer">
+                    <span class="text-[8px] font-bold uppercase text-red-500">Savage Roast Mode</span>
+                    <input type="checkbox" id="roast-toggle" class="w-4 h-4 accent-red-600">
+                </label>
+            </header>
+            <div class="aspect-[3/4] glass rounded-[2.5rem] flex flex-col items-center justify-center relative overflow-hidden border-dashed border-2 border-white/10">
+                <input type="file" id="photo" class="absolute inset-0 opacity-0 z-10" onchange="preview(this)">
+                <img id="preview-img" class="hidden absolute inset-0 w-full h-full object-cover">
+                <p id="upload-placeholder" class="text-[9px] uppercase font-bold text-gray-500">Capture Look</p>
+            </div>
+            <button onclick="openOccasions()" id="occ-trigger" class="w-full glass py-6 rounded-2xl text-sm font-bold text-gray-400">Select Occasion</button>
+            <button id="analyze-btn" onclick="analyze()" disabled class="w-full bg-rose-600 py-6 rounded-2xl font-black uppercase opacity-50 shadow-xl">Analyze</button>
+
+            <div id="scorecard" class="hidden glass p-8 rounded-[3rem] text-center border-rose-500/20">
+                <h2 id="res-score" class="text-8xl font-black italic mb-4">0.0</h2>
+                <div id="res-pillars" class="space-y-6 text-left pt-6 border-t border-white/5"></div>
+                <div id="closet-offer" class="mt-8 pt-8 border-t border-white/5 hidden">
+                    <p id="detected-item-text" class="text-[10px] uppercase font-bold text-rose-600 mb-3"></p>
+                    <button onclick="saveToCloset()" class="bg-white/5 border border-white/10 text-[9px] uppercase font-bold px-6 py-3 rounded-full">Extract Piece</button>
+                </div>
+            </div>
+            <div id="roast-box" class="hidden bg-red-950/20 border border-red-500/30 p-6 rounded-[2rem] text-center">
+                <p id="res-roast" class="text-sm italic text-red-100 font-medium"></p>
+            </div>
+        </div>
+
+        <div id="community-view" class="hidden space-y-8"><div id="community-list" class="space-y-12"></div></div>
+        <div id="closet-view" class="hidden space-y-8"><div id="closet-list" class="grid grid-cols-2 gap-4"></div></div>
+        <div id="profile-view" class="hidden space-y-8 text-center">
+            <div class="pt-10">
+                <h2 id="dna-text" class="text-xl font-bold text-rose-600">DNA</h2>
+                <span id="rank-text" class="px-4 py-1 bg-rose-100 text-rose-700 text-[9px] font-black rounded-full mt-2 inline-block">Stylist</span>
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+                <div class="glass p-6 rounded-3xl text-center"><p class="text-[9px] uppercase text-gray-500">Average</p><p id="avg-score" class="text-3xl font-black italic text-rose-600">0.0</p></div>
+                <div class="glass p-6 rounded-3xl text-center"><p class="text-[9px] uppercase font-bold text-gray-500">Total Fits</p><p id="total-fits" class="text-3xl font-black italic text-rose-600">0</p></div>
+            </div>
+            <div id="history-list" class="grid grid-cols-2 gap-4"></div>
+        </div>
+    </div>
+
+    <div id="occasion-drawer" class="fixed inset-x-0 bottom-0 z-[110] translate-y-full transition-transform duration-500 glass rounded-t-[3rem] p-10 border-t border-white/10">
+        <div class="grid grid-cols-2 gap-3 pb-8">
+            <button onclick="setOccasion('Casual')" class="occ-btn">Casual</button>
+            <button onclick="setOccasion('Formal')" class="occ-btn">Formal</button>
+            <button onclick="setOccasion('Streetwear')" class="occ-btn">Streetwear</button>
+            <button onclick="setOccasion('Nikah')" class="occ-btn">Nikah</button>
+            <button onclick="setOccasion('Office')" class="occ-btn">Office</button>
+            <button onclick="setOccasion('Date Night')" class="occ-btn">Date Night</button>
+            <button onclick="setOccasion('Gym')" class="occ-btn">Gym</button>
+            <button onclick="setOccasion('Party')" class="occ-btn">Party</button>
+        </div>
+    </div>
+
+    <script>
+        let selectedOccasion = ""; let lastFitId = null; let currentItem = null; let currentImg = null;
+        function toggleView(v) {
+            ['main','community','closet','profile'].forEach(x => { document.getElementById(x + '-view').classList.add('hidden'); document.getElementById('nav-' + x).classList.remove('nav-active'); });
+            document.getElementById(v + '-view').classList.remove('hidden'); document.getElementById('nav-' + v).classList.add('nav-active');
+            if (v === 'community') loadCommunity(); if (v === 'profile') loadProfile(); if (v === 'closet') loadCloset();
+        }
+        function setOccasion(v) { selectedOccasion=v; document.getElementById('occ-trigger').innerText=v; document.getElementById('analyze-btn').disabled=false; document.getElementById('analyze-btn').style.opacity="1"; document.getElementById('occasion-drawer').classList.add('translate-y-full'); }
+        function openOccasions() { document.getElementById('occasion-drawer').classList.remove('translate-y-full'); }
+        function preview(i) { if(i.files[0]){ const r=new FileReader(); r.onload=e=>{ document.getElementById('preview-img').src=e.target.result; document.getElementById('preview-img').classList.remove('hidden'); document.getElementById('upload-placeholder').classList.add('hidden'); }; r.readAsDataURL(i.files[0]); } }
+        
+        async function analyze() {
+            if(!selectedOccasion) return alert("Please select an occasion first!");
+            const file = document.getElementById('photo').files[0];
+            if(!file) return alert("Please upload a photo of your look first!");
+            
+            const fd = new FormData(); fd.append('file', file); fd.append('occasion', selectedOccasion); fd.append('roast_mode', document.getElementById('roast-toggle').checked);
+            document.getElementById('analyze-btn').innerText = "Analyzing Style...";
+            
+            // SURGICAL FIX: Try/Catch for Frontend Error Handling
+            try {
+                const res = await fetch('/analyze-fit/', { method: 'POST', body: fd }); 
+                const d = await res.json();
+                
+                if(d.status === 'success') {
+                    lastFitId = d.id; currentItem = d.breakdown.detected_piece; currentImg = d.image_url;
+                    document.getElementById('scorecard').classList.remove('hidden'); document.getElementById('res-score').innerText = d.final_score;
+                    document.getElementById('closet-offer').classList.remove('hidden'); document.getElementById('detected-item-text').innerText = currentItem;
+                    const pillars = [{n:'Color Harmony',k:'color_harmony'},{n:'Occasion Fit',k:'occasion_fit'},{n:'Style Coherence',k:'style_coherence'},{n:'Fit & Proportion',k:'fit_proportion'},{n:'Trend Score',k:'trend_score'}];
+                    document.getElementById('res-pillars').innerHTML = pillars.map(p => `<div class="pillar-row cursor-pointer"><div class="flex justify-between text-[10px] uppercase font-bold text-gray-400"><span>${p.n}</span><span>${d.breakdown[p.k].score}/10</span></div><div class="stat-bar"><div class="stat-fill" style="width: ${d.breakdown[p.k].score*10}%"></div></div><p class="reason-text">${d.breakdown[p.k].reason}</p></div>`).join('');
+                    
+                    if(d.breakdown.roast) { 
+                        document.getElementById('roast-box').classList.remove('hidden'); 
+                        document.getElementById('res-roast').innerText = d.breakdown.roast; 
+                    }
+                    document.getElementById('analyze-btn').innerText = "Analyze";
+                } else {
+                    alert("Analysis Failed: " + d.message); 
+                    document.getElementById('analyze-btn').innerText = "Analyze";
+                }
+            } catch (error) {
+                alert("Network Error: Could not reach the API."); 
+                document.getElementById('analyze-btn').innerText = "Analyze";
+            }
+        }
+        
+        async function saveToCloset() { const fd = new FormData(); fd.append('item_name', currentItem); fd.append('image_url', currentImg); await fetch('/add-to-closet/', { method: 'POST', body: fd }); alert("Saved to Closet!"); document.getElementById('closet-offer').classList.add('hidden'); }
+        async function loadCloset() { const data = await (await fetch('/closet')).json(); document.getElementById('closet-list').innerHTML = data.map(i => `<div class="glass p-3 rounded-3xl"><img src="${i.image_url}" class="w-full aspect-square object-cover rounded-2xl mb-2"><p class="text-[8px] font-black uppercase text-center">${i.item_name}</p></div>`).join(''); }
+        async function loadProfile() { const data = await (await fetch('/profile-dna')).json(); document.getElementById('dna-text').innerText = data.dna; document.getElementById('rank-text').innerText = data.level; document.getElementById('avg-score').innerText = data.avg_score; document.getElementById('total-fits').innerText = data.total_fits; const h = await (await fetch('/history')).json(); document.getElementById('history-list').innerHTML = h.map(f => `<div class="glass p-2 rounded-2xl"><img src="${f.image_url}" class="w-full aspect-square object-cover rounded-xl mb-2"><p class="font-black text-rose-600 text-center">${f.total_score}</p></div>`).join(''); }
+        async function loadCommunity() { const data = await (await fetch('/community')).json(); document.getElementById('community-list').innerHTML = data.map(f => `<div class="space-y-4"><img src="${f.image_url}" class="w-full aspect-[3/4] object-cover rounded-[2.5rem]"><div class="flex justify-between items-center px-4"><div><p class="text-5xl font-black italic">${f.total_score}</p><p class="text-[9px] uppercase font-bold text-gray-500">${f.occasion}</p></div><button class="w-12 h-12 glass rounded-full">❤️</button></div></div>`).join(''); }
+    </script>
+</body>
+</html>
