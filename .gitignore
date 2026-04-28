@@ -1,16 +1,40 @@
-# Security API Keys and Secrets
+# Environment variables (NEVER COMMIT)
 .env
+.env.local
+.env.*.local
 
-# Python Cache
-__pycache__
-.py[cod]
-$py.class
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+ENV/
+env/
+.venv/
 
-# Virtual Environments
-venv
-env
-.venv
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
 
-# OS generated files
+# OS
 .DS_Store
 Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Build
+dist/
+build/
+*.egg-info/

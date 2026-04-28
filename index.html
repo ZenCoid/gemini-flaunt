@@ -3,136 +3,954 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>flaunt.fit | Built Different</title>
+    <title>FLAUNT.FIT | Don't Rate. Match.</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&display=swap');
-        body { background: #000; color: white; font-family: 'Plus Jakarta Sans', sans-serif; overflow-x: hidden; margin: 0; }
-        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(40px); border: 1px solid rgba(255,255,255,0.08); }
-        .nav-active { color: #f43f5e; border-bottom: 2px solid #f43f5e; } /* Rose Gold Theme */
-        .stat-bar { height: 6px; background: rgba(255,255,255,0.05); border-radius: 3px; overflow: hidden; margin-top: 6px; }
-        .stat-fill { height: 100%; background: #f43f5e; border-radius: 3px; transition: width 1s ease; } /* Rose Gold Theme */
-        .reason-text { font-size: 10px; color: #9ca3af; margin-top: 8px; display: none; line-height: 1.4; padding: 10px; background: rgba(255,255,255,0.03); border-radius: 10px; }
-        .pillar-row:active .reason-text { display: block; }
-        .occ-btn { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); padding: 1.25rem; border-radius: 1.5rem; font-size: 11px; font-weight: 700; }
+        /* ========================================
+           FLAUNT.FIT - PREMIUM DARK THEME
+           Colors matched to brand logo
+           ======================================== */
+        
+        :root {
+            /* Core brand colors from logo */
+            --navy-deep: #080a12;
+            --navy-base: #0a0d1a;
+            --navy-light: #121426;
+            --navy-card: #0f1220;
+            
+            /* Brand gradient (pink to peach) */
+            --pink: #ff5a8f;
+            --peach: #ffb3a7;
+            --coral: #ff8a7a;
+            
+            /* Accent - sparkle gold */
+            --gold: #f0e6d2;
+            --gold-dim: #c4b89a;
+            
+            /* Text colors */
+            --text-primary: #ffffff;
+            --text-secondary: #a0a3b8;
+            --text-muted: #5a5d70;
+            
+            /* Glass effects */
+            --glass-bg: rgba(15, 18, 32, 0.6);
+            --glass-border: rgba(255, 255, 255, 0.06);
+            --glass-border-light: rgba(255, 255, 255, 0.1);
+        }
+        
+        * {
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: linear-gradient(180deg, var(--navy-deep) 0%, var(--navy-base) 40%, var(--navy-light) 100%);
+            color: var(--text-primary);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            overflow-x: hidden;
+            margin: 0;
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        /* Typography */
+        .font-display {
+            font-family: 'Playfair Display', Georgia, serif;
+        }
+        
+        .text-brand {
+            background: linear-gradient(135deg, var(--pink) 0%, var(--peach) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        /* Glass Card */
+        .glass {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+        }
+        
+        .glass-card {
+            background: rgba(15, 18, 32, 0.8);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border: 1px solid var(--glass-border-light);
+            box-shadow: 
+                0 4px 30px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.03);
+        }
+        
+        /* Background atmosphere */
+        .atmosphere {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 60vh;
+            background: 
+                radial-gradient(ellipse 60% 40% at 50% 0%, rgba(255, 90, 143, 0.08) 0%, transparent 70%),
+                radial-gradient(ellipse 40% 30% at 80% 10%, rgba(255, 179, 167, 0.05) 0%, transparent 60%);
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        /* Logo styling */
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            font-weight: 600;
+            background: linear-gradient(135deg, var(--pink) 0%, var(--peach) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        /* Sparkle accent */
+        .sparkle {
+            color: var(--gold);
+            text-shadow: 0 0 12px rgba(240, 230, 210, 0.4);
+        }
+        
+        /* Gradient button */
+        .btn-gradient {
+            background: linear-gradient(135deg, var(--pink) 0%, var(--peach) 100%);
+            color: #000;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(255, 90, 143, 0.3);
+        }
+        
+        .btn-gradient:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 25px rgba(255, 90, 143, 0.4);
+        }
+        
+        .btn-gradient:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        /* Occasion buttons */
+        .occ-btn {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--glass-border);
+            color: var(--text-secondary);
+            padding: 14px 16px;
+            border-radius: 14px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .occ-btn:hover {
+            background: rgba(255, 90, 143, 0.1);
+            border-color: rgba(255, 90, 143, 0.3);
+            color: var(--pink);
+        }
+        
+        /* Match ring */
+        .match-ring {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            background: conic-gradient(
+                var(--ring-color) calc(var(--ring-percent) * 1%),
+                rgba(255, 255, 255, 0.06) calc(var(--ring-percent) * 1%)
+            );
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        
+        .match-ring-inner {
+            width: 118px;
+            height: 118px;
+            border-radius: 50%;
+            background: var(--navy-deep);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+        
+        /* Navigation */
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            padding: 8px 16px;
+            color: var(--text-muted);
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+        
+        .nav-item.active {
+            color: var(--pink);
+        }
+        
+        .nav-item:hover {
+            color: var(--text-secondary);
+        }
+        
+        .nav-item.active:hover {
+            color: var(--pink);
+        }
+        
+        /* Loader */
+        .loader {
+            width: 36px;
+            height: 36px;
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-top-color: var(--pink);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        /* Roast card - fire gradient border */
+        .roast-card {
+            background: linear-gradient(135deg, rgba(255, 107, 53, 0.08) 0%, rgba(255, 90, 143, 0.08) 100%);
+            backdrop-filter: blur(30px);
+            border: 1px solid rgba(255, 107, 53, 0.25);
+            border-left: 4px solid #ff6b35;
+            box-shadow: 
+                0 8px 40px rgba(255, 107, 53, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .roast-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255, 107, 53, 0.5), transparent);
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.4s ease forwards;
+        }
+        
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 0; height: 0; }
+        
+        /* Input styling */
+        input[type="text"] {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--glass-border);
+            color: var(--text-primary);
+            outline: none;
+            transition: border-color 0.2s ease;
+        }
+        
+        input[type="text"]:focus {
+            border-color: rgba(255, 90, 143, 0.4);
+        }
+        
+        input[type="text"]::placeholder {
+            color: var(--text-muted);
+        }
+        
+        /* Color label accents */
+        .label-pink { color: var(--pink); }
+        .label-peach { color: var(--peach); }
+        .label-gold { color: var(--gold); }
+        .label-fire { color: #ff6b35; }
+        
+        /* Score colors */
+        .score-high { color: #34d399; }
+        .score-mid { color: var(--gold); }
+        .score-low { color: var(--pink); }
     </style>
 </head>
-<body class="pb-32">
-    <nav class="fixed bottom-0 inset-x-0 z-[100] glass flex justify-around p-6 border-t border-white/5">
-        <button onclick="toggleView('main')" id="nav-main" class="text-[9px] font-bold uppercase nav-active">Mirror</button>
-        <button onclick="toggleView('community')" id="nav-community" class="text-[9px] font-bold uppercase">Feed</button>
-        <button onclick="toggleView('closet')" id="nav-closet" class="text-[9px] font-bold uppercase">Closet</button>
-        <button onclick="toggleView('profile')" id="nav-profile" class="text-[9px] font-bold uppercase">DNA</button>
-    </nav>
-
-    <div class="max-w-md mx-auto p-6">
-        <div id="main-view" class="space-y-6">
-            <header class="py-4 flex justify-between items-center">
-                <h1 class="text-2xl font-black italic text-rose-600">flaunt.fit</h1>
-                <label class="flex items-center gap-2 cursor-pointer">
-                    <span class="text-[8px] font-bold uppercase text-red-500">Savage Roast Mode</span>
-                    <input type="checkbox" id="roast-toggle" class="w-4 h-4 accent-red-600">
-                </label>
-            </header>
-            <div class="aspect-[3/4] glass rounded-[2.5rem] flex flex-col items-center justify-center relative overflow-hidden border-dashed border-2 border-white/10">
-                <input type="file" id="photo" class="absolute inset-0 opacity-0 z-10" onchange="preview(this)">
-                <img id="preview-img" class="hidden absolute inset-0 w-full h-full object-cover">
-                <p id="upload-placeholder" class="text-[9px] uppercase font-bold text-gray-500">Capture Look</p>
+<body class="pb-24">
+    
+    <!-- Background Atmosphere -->
+    <div class="atmosphere"></div>
+    
+    <!-- Main Content Container -->
+    <div style="position: relative; z-index: 1; max-width: 420px; margin: 0 auto; padding: 20px;">
+    
+        <!-- Bottom Navigation -->
+        <nav style="position: fixed; bottom: 0; left: 0; right: 0; z-index: 100; background: rgba(8, 10, 18, 0.95); backdrop-filter: blur(20px); border-top: 1px solid rgba(255,255,255,0.06); padding: 12px 0 20px;">
+            <div style="display: flex; justify-content: space-around; max-width: 420px; margin: 0 auto;">
+                <button onclick="switchView('main')" id="nav-main" class="nav-item active">
+                    <svg width="22" height="22" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    </svg>
+                    <span style="font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">Mirror</span>
+                </button>
+                <button onclick="switchView('closet')" id="nav-closet" class="nav-item">
+                    <svg width="22" height="22" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                    </svg>
+                    <span style="font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">Closet</span>
+                </button>
+                <button onclick="switchView('community')" id="nav-community" class="nav-item">
+                    <svg width="22" height="22" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    </svg>
+                    <span style="font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">Feed</span>
+                </button>
+                <button onclick="switchView('profile')" id="nav-profile" class="nav-item">
+                    <svg width="22" height="22" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                    </svg>
+                    <span style="font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">DNA</span>
+                </button>
             </div>
-            <button onclick="openOccasions()" id="occ-trigger" class="w-full glass py-6 rounded-2xl text-sm font-bold text-gray-400">Select Occasion</button>
-            <button id="analyze-btn" onclick="analyze()" disabled class="w-full bg-rose-600 py-6 rounded-2xl font-black uppercase opacity-50 shadow-xl">Analyze</button>
+        </nav>
 
-            <div id="scorecard" class="hidden glass p-8 rounded-[3rem] text-center border-rose-500/20">
-                <h2 id="res-score" class="text-8xl font-black italic mb-4">0.0</h2>
-                <div id="res-pillars" class="space-y-6 text-left pt-6 border-t border-white/5"></div>
-                <div id="closet-offer" class="mt-8 pt-8 border-t border-white/5 hidden">
-                    <p id="detected-item-text" class="text-[10px] uppercase font-bold text-rose-600 mb-3"></p>
-                    <button onclick="saveToCloset()" class="bg-white/5 border border-white/10 text-[9px] uppercase font-bold px-6 py-3 rounded-full">Extract Piece</button>
+        <!-- ========== MAIN VIEW ========== -->
+        <div id="main-view" class="space-y-5">
+            
+            <!-- Header -->
+            <header style="padding: 16px 0; display: flex; justify-content: space-between; align-items: center;">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <span class="logo" style="font-size: 24px;">flaunt.fit</span>
+                    <span class="sparkle" style="font-size: 16px;">✦</span>
+                </div>
+                <span style="font-family: 'Playfair Display', serif; font-style: italic; font-size: 11px; color: var(--text-muted);">Vol. 01</span>
+            </header>
+
+            <!-- Hero -->
+            <div style="text-align: center; padding: 8px 0 16px;">
+                <p style="font-family: 'Playfair Display', serif; font-style: italic; color: var(--pink); font-size: 14px; margin-bottom: 8px;">your outfit's honest bestie</p>
+                <h2 style="font-size: 32px; font-weight: 700; line-height: 1.1;">
+                    Don't Rate.<br>
+                    <span class="logo">Match.</span>
+                </h2>
+            </div>
+
+            <!-- Upload Zone -->
+            <div id="upload-zone" style="aspect-ratio: 3/4; border-radius: 24px; position: relative; overflow: hidden; cursor: pointer; transition: all 0.3s ease;" class="glass-card">
+                <input type="file" id="photo-input" accept="image/jpeg,image/png,image/webp" style="position: absolute; inset: 0; opacity: 0; z-index: 10;">
+                <img id="preview-img" style="display: none; position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; border-radius: 24px;">
+                <div id="upload-placeholder" style="position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 24px;">
+                    <div style="position: relative; margin-bottom: 16px;">
+                        <svg width="56" height="56" fill="none" stroke="rgba(255,255,255,0.15)" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                        </svg>
+                        <span style="position: absolute; top: -4px; right: -4px; color: var(--gold); font-size: 14px;">✦</span>
+                    </div>
+                    <p style="color: var(--text-secondary); font-size: 14px; font-weight: 500; margin-bottom: 4px;">Drop your fit</p>
+                    <p style="color: var(--text-muted); font-size: 12px;">Tap to browse or drag & drop</p>
+                </div>
+                <button id="clear-img-btn" style="display: none; position: absolute; top: 16px; right: 16px; z-index: 20; width: 32px; height: 32px; border-radius: 50%; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); color: white; cursor: pointer;">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="margin: auto; display: block;">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Occasion Selector -->
+            <button id="occasion-btn" onclick="openOccasionDrawer()" class="glass" style="width: 100%; padding: 16px 20px; border-radius: 16px; display: flex; justify-content: space-between; align-items: center; cursor: pointer;">
+                <span style="color: var(--text-muted); font-size: 14px;">Where you headed?</span>
+                <svg width="20" height="20" fill="none" stroke="var(--text-muted)" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                </svg>
+            </button>
+
+            <!-- Vibe Goal -->
+            <div>
+                <label style="font-size: 12px; color: var(--text-muted); font-weight: 500;">Vibe goal <span style="color: var(--text-muted); opacity: 0.6;">(optional)</span></label>
+                <input type="text" id="vibe-input" maxlength="100" placeholder="e.g., 'soft launch energy', 'main character'" style="width: 100%; margin-top: 8px; padding: 14px 16px; border-radius: 14px; font-size: 14px;">
+            </div>
+
+            <!-- Roast Mode Toggle -->
+            <div class="glass" style="padding: 16px 20px; border-radius: 16px; display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <p style="font-size: 14px; font-weight: 600; color: var(--text-primary);">🔥 Roast Mode</p>
+                    <p style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">Get savage fashion critique</p>
+                </div>
+                <label style="position: relative; display: inline-block; width: 52px; height: 28px;">
+                    <input type="checkbox" id="roast-toggle" style="opacity: 0; width: 0; height: 0;" checked>
+                    <span id="roast-slider" style="position: absolute; cursor: pointer; inset: 0; background: linear-gradient(135deg, #ff6b35 0%, #ff5a8f 100%); border-radius: 28px; transition: 0.3s;"></span>
+                    <span id="roast-knob" style="position: absolute; content: ''; height: 22px; width: 22px; left: 3px; bottom: 3px; background: white; border-radius: 50%; transition: 0.3s;"></span>
+                </label>
+            </div>
+
+            <!-- Analyze Button -->
+            <button id="analyze-btn" onclick="analyzeFit()" disabled class="btn-gradient" style="width: 100%; padding: 16px; border-radius: 16px; font-size: 14px; text-transform: uppercase; letter-spacing: 1px;">
+                Analyze My Fit 🔥
+            </button>
+
+            <!-- Loading -->
+            <div id="loading-state" style="display: none; text-align: center; padding: 48px 0;">
+                <div class="loader" style="margin: 0 auto 16px;"></div>
+                <p id="loading-text" style="color: var(--text-secondary); font-size: 14px;">Reading the fit...</p>
+                <p style="color: var(--text-muted); font-size: 12px; margin-top: 4px;">Usually takes 5-10 seconds</p>
+            </div>
+
+            <!-- Results -->
+            <div id="results-card" style="display: none;" class="fade-in">
+                
+                <!-- Score Ring -->
+                <div class="glass-card" style="border-radius: 24px; padding: 24px; text-align: center;">
+                    <p id="score-label" style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 16px;">Occasion Match</p>
+                    <div class="match-ring" id="match-ring" style="margin: 0 auto; --ring-percent: 0; --ring-color: var(--pink);">
+                        <div class="match-ring-inner">
+                            <span id="match-percent" style="font-size: 36px; font-weight: 700;" class="text-brand">0</span>
+                            <span style="font-size: 12px; color: var(--text-muted);">%</span>
+                        </div>
+                    </div>
+                    <p id="confidence-badge" style="display: inline-block; margin-top: 16px; padding: 6px 14px; border-radius: 20px; font-size: 10px; font-weight: 700; text-transform: uppercase; background: rgba(255,255,255,0.03); color: var(--text-muted);"></p>
+                </div>
+
+                <!-- THE ROAST - Special Fire Card -->
+                <div id="roast-section" style="display: none; margin-top: 16px;" class="roast-card fade-in">
+                    <div style="padding: 24px; border-radius: 20px;">
+                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+                            <span style="font-size: 18px;">🔥</span>
+                            <p class="label-fire" style="font-size: 11px; text-transform: uppercase; letter-spacing: 2px; font-weight: 700;">The Roast</p>
+                        </div>
+                        <p id="roast-text" style="font-size: 16px; color: var(--text-primary); line-height: 1.7; font-weight: 500; letter-spacing: -0.1px;"></p>
+                    </div>
+                </div>
+
+                <!-- Vibe Check -->
+                <div class="glass" style="border-radius: 16px; padding: 20px;">
+                    <p class="label-pink" style="font-size: 10px; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 8px; font-weight: 600;">Vibe Check</p>
+                    <p id="vibe-check-text" style="font-family: 'Playfair Display', serif; font-style: italic; font-size: 17px; color: var(--text-primary); line-height: 1.5;"></p>
+                </div>
+
+                <!-- Analysis -->
+                <div style="display: grid; gap: 12px;">
+                    <div class="glass" style="border-radius: 16px; padding: 20px;">
+                        <p class="label-peach" style="font-size: 10px; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 8px; font-weight: 600;">Color Harmony</p>
+                        <p id="color-harmony-text" style="font-size: 14px; color: var(--text-secondary); line-height: 1.6;"></p>
+                    </div>
+                    <div class="glass" style="border-radius: 16px; padding: 20px;">
+                        <p class="label-gold" style="font-size: 10px; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 8px; font-weight: 600;">Formality</p>
+                        <p id="formality-text" style="font-size: 14px; color: var(--text-secondary); line-height: 1.6;"></p>
+                    </div>
+                </div>
+
+                <!-- The Fix -->
+                <div class="glass-card" style="border-radius: 16px; padding: 20px; border-left: 3px solid var(--pink);">
+                    <p class="label-pink" style="font-size: 10px; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 8px; font-weight: 600;">The Fix</p>
+                    <p id="the-fix-text" style="font-size: 14px; color: var(--text-primary); line-height: 1.6; font-weight: 500;"></p>
+                </div>
+
+                <!-- Items -->
+                <div id="items-section" style="display: none;">
+                    <p style="font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 12px;">Items Spotted</p>
+                    <div id="items-container" style="display: flex; flex-wrap: wrap; gap: 8px;"></div>
+                </div>
+
+                <!-- Add to Closet -->
+                <div id="closet-offer" style="display: none; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.05);">
+                    <button onclick="saveToCloset()" class="glass" style="width: 100%; padding: 14px; border-radius: 14px; font-size: 13px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                        </svg>
+                        Add Item to Closet
+                    </button>
+                </div>
+
+                <!-- Actions -->
+                <div style="display: flex; gap: 12px;">
+                    <button onclick="resetAnalysis()" class="glass" style="flex: 1; padding: 14px; border-radius: 14px; font-size: 13px; font-weight: 500; cursor: pointer;">Try Again</button>
+                    <button onclick="resetAll()" style="flex: 1; padding: 14px; border-radius: 14px; font-size: 13px; font-weight: 500; cursor: pointer; background: transparent; border: 1px solid rgba(255,90,143,0.3); color: var(--pink);">New Fit</button>
                 </div>
             </div>
-            <div id="roast-box" class="hidden bg-red-950/20 border border-red-500/30 p-6 rounded-[2rem] text-center">
-                <p id="res-roast" class="text-sm italic text-red-100 font-medium"></p>
+
+            <!-- Error -->
+            <div id="error-state" style="display: none;" class="glass">
+                <div style="padding: 24px; text-align: center; border-radius: 16px; border: 1px solid rgba(255,90,143,0.2);">
+                    <svg width="40" height="40" fill="none" stroke="var(--pink)" viewBox="0 0 24 24" style="margin: 0 auto 12px;">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <p id="error-message" style="color: var(--pink); font-size: 14px; font-weight: 500; margin-bottom: 12px;"></p>
+                    <button onclick="resetAll()" style="font-size: 12px; color: var(--text-muted); text-decoration: underline; background: none; border: none; cursor: pointer;">Start over</button>
+                </div>
             </div>
         </div>
 
-        <div id="community-view" class="hidden space-y-8"><div id="community-list" class="space-y-12"></div></div>
-        <div id="closet-view" class="hidden space-y-8"><div id="closet-list" class="grid grid-cols-2 gap-4"></div></div>
-        <div id="profile-view" class="hidden space-y-8 text-center">
-            <div class="pt-10">
-                <h2 id="dna-text" class="text-xl font-bold text-rose-600">DNA</h2>
-                <span id="rank-text" class="px-4 py-1 bg-rose-100 text-rose-700 text-[9px] font-black rounded-full mt-2 inline-block">Stylist</span>
+        <!-- ========== CLOSET VIEW ========== -->
+        <div id="closet-view" style="display: none;" class="space-y-5">
+            <header style="padding: 16px 0;">
+                <h2 class="logo" style="font-size: 22px;">Your Closet</h2>
+                <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Saved items from outfit analyses</p>
+            </header>
+            <div id="closet-grid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;"></div>
+            <div id="closet-empty" style="display: none; text-align: center; padding: 48px 0;">
+                <svg width="48" height="48" fill="none" stroke="var(--text-muted)" viewBox="0 0 24 24" style="margin: 0 auto 16px; opacity: 0.3;">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                </svg>
+                <p style="color: var(--text-muted); font-size: 14px;">Your closet is empty rn</p>
+                <p style="color: var(--text-muted); font-size: 12px; margin-top: 4px; opacity: 0.6;">Analyze fits to add items</p>
             </div>
-            <div class="grid grid-cols-2 gap-4">
-                <div class="glass p-6 rounded-3xl text-center"><p class="text-[9px] uppercase text-gray-500">Average</p><p id="avg-score" class="text-3xl font-black italic text-rose-600">0.0</p></div>
-                <div class="glass p-6 rounded-3xl text-center"><p class="text-[9px] uppercase font-bold text-gray-500">Total Fits</p><p id="total-fits" class="text-3xl font-black italic text-rose-600">0</p></div>
+        </div>
+
+        <!-- ========== COMMUNITY VIEW ========== -->
+        <div id="community-view" style="display: none;" class="space-y-5">
+            <header style="padding: 16px 0;">
+                <h2 class="logo" style="font-size: 22px;">Style Feed</h2>
+                <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Public fits from the community</p>
+            </header>
+            <div id="community-list" style="display: flex; flex-direction: column; gap: 24px;"></div>
+            <div id="community-empty" style="display: none; text-align: center; padding: 48px 0;">
+                <svg width="48" height="48" fill="none" stroke="var(--text-muted)" viewBox="0 0 24 24" style="margin: 0 auto 16px; opacity: 0.3;">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                </svg>
+                <p style="color: var(--text-muted); font-size: 14px;">No public fits yet</p>
+                <p style="color: var(--text-muted); font-size: 12px; margin-top: 4px; opacity: 0.6;">Be the first to share!</p>
             </div>
-            <div id="history-list" class="grid grid-cols-2 gap-4"></div>
+        </div>
+
+        <!-- ========== PROFILE VIEW ========== -->
+        <div id="profile-view" style="display: none;" class="space-y-5">
+            <header style="padding: 24px 0; text-align: center;">
+                <div style="width: 72px; height: 72px; margin: 0 auto 16px; border-radius: 50%; background: linear-gradient(135deg, var(--pink) 0%, var(--peach) 100%); display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 20px rgba(255,90,143,0.3);">
+                    <span style="font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 700; color: #000;">F</span>
+                </div>
+                <h2 id="dna-title" class="logo" style="font-size: 22px;">Style DNA</h2>
+                <span id="level-badge" style="display: inline-block; margin-top: 8px; padding: 6px 16px; border-radius: 20px; font-size: 11px; font-weight: 700; background: rgba(255,255,255,0.03); color: var(--pink);">Loading...</span>
+            </header>
+            
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
+                <div class="glass" style="border-radius: 16px; padding: 20px; text-align: center;">
+                    <p style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 4px;">Avg Match</p>
+                    <p id="avg-match" style="font-size: 28px; font-weight: 700;" class="text-brand">0%</p>
+                </div>
+                <div class="glass" style="border-radius: 16px; padding: 20px; text-align: center;">
+                    <p style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 4px;">Total Fits</p>
+                    <p id="total-fits" style="font-size: 28px; font-weight: 700; color: white;">0</p>
+                </div>
+            </div>
+
+            <div class="glass" style="border-radius: 16px; padding: 20px; border-left: 3px solid var(--gold);">
+                <p class="label-gold" style="font-size: 10px; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 8px; font-weight: 600;">Insight</p>
+                <p id="insight-text" style="font-size: 14px; color: var(--text-secondary); line-height: 1.6;"></p>
+            </div>
+
+            <div>
+                <p style="font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 12px;">Recent History</p>
+                <div id="history-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;"></div>
+            </div>
         </div>
     </div>
 
-    <div id="occasion-drawer" class="fixed inset-x-0 bottom-0 z-[110] translate-y-full transition-transform duration-500 glass rounded-t-[3rem] p-10 border-t border-white/10">
-        <div class="grid grid-cols-2 gap-3 pb-8">
-            <button onclick="setOccasion('Casual')" class="occ-btn">Casual</button>
-            <button onclick="setOccasion('Formal')" class="occ-btn">Formal</button>
-            <button onclick="setOccasion('Streetwear')" class="occ-btn">Streetwear</button>
-            <button onclick="setOccasion('Nikah')" class="occ-btn">Nikah</button>
-            <button onclick="setOccasion('Office')" class="occ-btn">Office</button>
-            <button onclick="setOccasion('Date Night')" class="occ-btn">Date Night</button>
-            <button onclick="setOccasion('Gym')" class="occ-btn">Gym</button>
-            <button onclick="setOccasion('Party')" class="occ-btn">Party</button>
+    <!-- Occasion Drawer -->
+    <div id="occasion-drawer" style="position: fixed; left: 0; right: 0; bottom: 0; z-index: 200; transform: translateY(100%); transition: transform 0.3s ease; background: rgba(8, 10, 18, 0.98); backdrop-filter: blur(30px); border-radius: 24px 24px 0 0; padding: 24px; border-top: 1px solid rgba(255,255,255,0.06);">
+        <div style="width: 36px; height: 4px; background: rgba(255,255,255,0.15); border-radius: 2px; margin: 0 auto 20px;"></div>
+        <p style="font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 16px;">Where you headed?</p>
+        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;">
+            <button onclick="selectOccasion('Casual')" class="occ-btn">Casual</button>
+            <button onclick="selectOccasion('Office / Work')" class="occ-btn">Office / Work</button>
+            <button onclick="selectOccasion('Formal Event')" class="occ-btn">Formal Event</button>
+            <button onclick="selectOccasion('Date Night')" class="occ-btn">Date Night</button>
+            <button onclick="selectOccasion('Wedding Guest')" class="occ-btn">Wedding Guest</button>
+            <button onclick="selectOccasion('Dholki / Mehndi')" class="occ-btn">Dholki / Mehndi</button>
+            <button onclick="selectOccasion('Nikah')" class="occ-btn">Nikah</button>
+            <button onclick="selectOccasion('Street Style')" class="occ-btn">Street Style</button>
+            <button onclick="selectOccasion('Gym / Workout')" class="occ-btn">Gym / Workout</button>
+            <button onclick="selectOccasion('Party / Club')" class="occ-btn">Party / Club</button>
         </div>
     </div>
 
     <script>
-        let selectedOccasion = ""; let lastFitId = null; let currentItem = null; let currentImg = null;
-        function toggleView(v) {
-            ['main','community','closet','profile'].forEach(x => { document.getElementById(x + '-view').classList.add('hidden'); document.getElementById('nav-' + x).classList.remove('nav-active'); });
-            document.getElementById(v + '-view').classList.remove('hidden'); document.getElementById('nav-' + v).classList.add('nav-active');
-            if (v === 'community') loadCommunity(); if (v === 'profile') loadProfile(); if (v === 'closet') loadCloset();
+        // State
+        let selectedOccasion = '';
+        let currentFile = null;
+        let currentImageData = null;
+        let lastAnalysis = null;
+
+        // Elements
+        const photoInput = document.getElementById('photo-input');
+        const previewImg = document.getElementById('preview-img');
+        const uploadPlaceholder = document.getElementById('upload-placeholder');
+        const clearImgBtn = document.getElementById('clear-img-btn');
+        const occasionBtn = document.getElementById('occasion-btn');
+        const vibeInput = document.getElementById('vibe-input');
+        const analyzeBtn = document.getElementById('analyze-btn');
+        const loadingState = document.getElementById('loading-state');
+        const resultsCard = document.getElementById('results-card');
+        const errorState = document.getElementById('error-state');
+        const occasionDrawer = document.getElementById('occasion-drawer');
+
+        // View switching
+        function switchView(view) {
+            const views = ['main', 'closet', 'community', 'profile'];
+            views.forEach(v => {
+                document.getElementById(`${v}-view`).style.display = 'none';
+                document.getElementById(`nav-${v}`).classList.remove('active');
+            });
+            document.getElementById(`${view}-view`).style.display = 'block';
+            document.getElementById(`nav-${view}`).classList.add('active');
+
+            if (view === 'closet') loadCloset();
+            if (view === 'community') loadCommunity();
+            if (view === 'profile') loadProfile();
         }
-        function setOccasion(v) { selectedOccasion=v; document.getElementById('occ-trigger').innerText=v; document.getElementById('analyze-btn').disabled=false; document.getElementById('analyze-btn').style.opacity="1"; document.getElementById('occasion-drawer').classList.add('translate-y-full'); }
-        function openOccasions() { document.getElementById('occasion-drawer').classList.remove('translate-y-full'); }
-        function preview(i) { if(i.files[0]){ const r=new FileReader(); r.onload=e=>{ document.getElementById('preview-img').src=e.target.result; document.getElementById('preview-img').classList.remove('hidden'); document.getElementById('upload-placeholder').classList.add('hidden'); }; r.readAsDataURL(i.files[0]); } }
-        
-        async function analyze() {
-            if(!selectedOccasion) return alert("Please select an occasion first!");
-            const file = document.getElementById('photo').files[0];
-            if(!file) return alert("Please upload a photo of your look first!");
-            
-            const fd = new FormData(); fd.append('file', file); fd.append('occasion', selectedOccasion); fd.append('roast_mode', document.getElementById('roast-toggle').checked);
-            document.getElementById('analyze-btn').innerText = "Analyzing Style...";
-            
-            // SURGICAL FIX: Try/Catch for Frontend Error Handling
-            try {
-                const res = await fetch('/analyze-fit/', { method: 'POST', body: fd }); 
-                const d = await res.json();
-                
-                if(d.status === 'success') {
-                    lastFitId = d.id; currentItem = d.breakdown.detected_piece; currentImg = d.image_url;
-                    document.getElementById('scorecard').classList.remove('hidden'); document.getElementById('res-score').innerText = d.final_score;
-                    document.getElementById('closet-offer').classList.remove('hidden'); document.getElementById('detected-item-text').innerText = currentItem;
-                    const pillars = [{n:'Color Harmony',k:'color_harmony'},{n:'Occasion Fit',k:'occasion_fit'},{n:'Style Coherence',k:'style_coherence'},{n:'Fit & Proportion',k:'fit_proportion'},{n:'Trend Score',k:'trend_score'}];
-                    document.getElementById('res-pillars').innerHTML = pillars.map(p => `<div class="pillar-row cursor-pointer"><div class="flex justify-between text-[10px] uppercase font-bold text-gray-400"><span>${p.n}</span><span>${d.breakdown[p.k].score}/10</span></div><div class="stat-bar"><div class="stat-fill" style="width: ${d.breakdown[p.k].score*10}%"></div></div><p class="reason-text">${d.breakdown[p.k].reason}</p></div>`).join('');
-                    
-                    if(d.breakdown.roast) { 
-                        document.getElementById('roast-box').classList.remove('hidden'); 
-                        document.getElementById('res-roast').innerText = d.breakdown.roast; 
-                    }
-                    document.getElementById('analyze-btn').innerText = "Analyze";
-                } else {
-                    alert("Analysis Failed: " + d.message); 
-                    document.getElementById('analyze-btn').innerText = "Analyze";
-                }
-            } catch (error) {
-                alert("Network Error: Could not reach the API."); 
-                document.getElementById('analyze-btn').innerText = "Analyze";
+
+        // Image handling
+        photoInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const validTypes = ['image/jpeg', 'image/png', 'image/webp'];
+            if (!validTypes.includes(file.type)) {
+                showError('Please use JPG, PNG, or WebP images');
+                return;
+            }
+
+            if (file.size > 10 * 1024 * 1024) {
+                showError('Image must be under 10MB');
+                return;
+            }
+
+            currentFile = file;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                currentImageData = e.target.result;
+                previewImg.src = currentImageData;
+                previewImg.style.display = 'block';
+                uploadPlaceholder.style.display = 'none';
+                clearImgBtn.style.display = 'block';
+                updateAnalyzeButton();
+            };
+            reader.readAsDataURL(file);
+        });
+
+        clearImgBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            clearImage();
+        });
+
+        function clearImage() {
+            currentFile = null;
+            currentImageData = null;
+            photoInput.value = '';
+            previewImg.src = '';
+            previewImg.style.display = 'none';
+            uploadPlaceholder.style.display = 'flex';
+            clearImgBtn.style.display = 'none';
+            updateAnalyzeButton();
+        }
+
+        // Occasion
+        function openOccasionDrawer() {
+            occasionDrawer.style.transform = 'translateY(0)';
+        }
+
+        function closeOccasionDrawer() {
+            occasionDrawer.style.transform = 'translateY(100%)';
+        }
+
+        function selectOccasion(occasion) {
+            selectedOccasion = occasion;
+            occasionBtn.innerHTML = `
+                <span style="color: white; font-size: 14px; font-weight: 500;">${occasion}</span>
+                <svg width="20" height="20" fill="none" stroke="var(--pink)" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+            `;
+            closeOccasionDrawer();
+            updateAnalyzeButton();
+        }
+
+        document.addEventListener('click', function(e) {
+            if (!occasionDrawer.contains(e.target) && !occasionBtn.contains(e.target)) {
+                closeOccasionDrawer();
+            }
+        });
+
+        function updateAnalyzeButton() {
+            const canAnalyze = currentFile && selectedOccasion;
+            analyzeBtn.disabled = !canAnalyze;
+        }
+
+        // Roast Toggle Animation
+        const roastToggle = document.getElementById('roast-toggle');
+        const roastKnob = document.getElementById('roast-knob');
+        const roastSlider = document.getElementById('roast-slider');
+
+        function updateRoastToggle() {
+            if (roastToggle.checked) {
+                roastKnob.style.transform = 'translateX(24px)';
+                roastSlider.style.background = 'linear-gradient(135deg, #ff6b35 0%, #ff5a8f 100%)';
+                analyzeBtn.innerHTML = 'Roast My Fit 🔥';
+            } else {
+                roastKnob.style.transform = 'translateX(0)';
+                roastSlider.style.background = 'rgba(255, 255, 255, 0.1)';
+                analyzeBtn.innerHTML = 'Analyze My Fit ✨';
             }
         }
-        
-        async function saveToCloset() { const fd = new FormData(); fd.append('item_name', currentItem); fd.append('image_url', currentImg); await fetch('/add-to-closet/', { method: 'POST', body: fd }); alert("Saved to Closet!"); document.getElementById('closet-offer').classList.add('hidden'); }
-        async function loadCloset() { const data = await (await fetch('/closet')).json(); document.getElementById('closet-list').innerHTML = data.map(i => `<div class="glass p-3 rounded-3xl"><img src="${i.image_url}" class="w-full aspect-square object-cover rounded-2xl mb-2"><p class="text-[8px] font-black uppercase text-center">${i.item_name}</p></div>`).join(''); }
-        async function loadProfile() { const data = await (await fetch('/profile-dna')).json(); document.getElementById('dna-text').innerText = data.dna; document.getElementById('rank-text').innerText = data.level; document.getElementById('avg-score').innerText = data.avg_score; document.getElementById('total-fits').innerText = data.total_fits; const h = await (await fetch('/history')).json(); document.getElementById('history-list').innerHTML = h.map(f => `<div class="glass p-2 rounded-2xl"><img src="${f.image_url}" class="w-full aspect-square object-cover rounded-xl mb-2"><p class="font-black text-rose-600 text-center">${f.total_score}</p></div>`).join(''); }
-        async function loadCommunity() { const data = await (await fetch('/community')).json(); document.getElementById('community-list').innerHTML = data.map(f => `<div class="space-y-4"><img src="${f.image_url}" class="w-full aspect-[3/4] object-cover rounded-[2.5rem]"><div class="flex justify-between items-center px-4"><div><p class="text-5xl font-black italic">${f.total_score}</p><p class="text-[9px] uppercase font-bold text-gray-500">${f.occasion}</p></div><button class="w-12 h-12 glass rounded-full">❤️</button></div></div>`).join(''); }
+
+        roastToggle.addEventListener('change', updateRoastToggle);
+        updateRoastToggle(); // Initial state
+
+        // Analysis
+        async function analyzeFit() {
+            if (!currentFile || !selectedOccasion) return;
+
+            analyzeBtn.style.display = 'none';
+            loadingState.style.display = 'block';
+            resultsCard.style.display = 'none';
+            errorState.style.display = 'none';
+
+            try {
+                const formData = new FormData();
+                formData.append('file', currentFile);
+                formData.append('occasion', selectedOccasion);
+                const vibeGoal = vibeInput.value.trim();
+                if (vibeGoal) formData.append('vibe_goal', vibeGoal);
+                
+                // Send roast mode
+                const isRoastMode = roastToggle.checked ? 'true' : 'false';
+                formData.append('roast_mode', isRoastMode);
+
+                const response = await fetch('/analyze-fit/', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    lastAnalysis = data;
+                    displayResults(data);
+                } else {
+                    showError(data.message || 'Analysis failed. Try again bestie.');
+                }
+
+            } catch (error) {
+                console.error('Analysis error:', error);
+                showError('Network error. Check your connection.');
+            } finally {
+                loadingState.style.display = 'none';
+                analyzeBtn.style.display = 'block';
+            }
+        }
+
+        function displayResults(data) {
+            const percent = data.occasion_match || 0;
+            const matchRing = document.getElementById('match-ring');
+            
+            let color = '#ff5a8f';
+            if (percent >= 75) color = '#34d399';
+            else if (percent >= 50) color = '#f0e6d2';
+            
+            matchRing.style.setProperty('--ring-percent', percent);
+            matchRing.style.setProperty('--ring-color', color);
+            document.getElementById('match-percent').textContent = percent;
+            document.getElementById('confidence-badge').textContent = `${data.confidence || 'Medium'} Confidence`;
+
+            document.getElementById('vibe-check-text').textContent = data.vibe_check || '';
+            document.getElementById('color-harmony-text').textContent = data.color_harmony || '';
+            document.getElementById('formality-text').textContent = data.formality_calibration || '';
+            document.getElementById('the-fix-text').textContent = data.the_fix || '';
+
+            // Always show roast - it's now the main feature
+            const roastSection = document.getElementById('roast-section');
+            if (data.roast) {
+                roastSection.style.display = 'block';
+                document.getElementById('roast-text').textContent = data.roast;
+            } else {
+                roastSection.style.display = 'none';
+            }
+
+            const itemsSection = document.getElementById('items-section');
+            const itemsContainer = document.getElementById('items-container');
+            if (data.items_spotted && data.items_spotted.length > 0) {
+                itemsSection.style.display = 'block';
+                itemsContainer.innerHTML = data.items_spotted.map(item => 
+                    `<span style="padding: 6px 12px; border-radius: 20px; font-size: 12px; background: linear-gradient(135deg, rgba(255, 90, 143, 0.15) 0%, rgba(255, 179, 167, 0.15) 100%); border: 1px solid rgba(255,255,255,0.08); color: var(--text-secondary);">${escapeHtml(item)}</span>`
+                ).join('');
+                
+                if (data.image_url) {
+                    document.getElementById('closet-offer').style.display = 'block';
+                }
+            } else {
+                itemsSection.style.display = 'none';
+            }
+
+            resultsCard.style.display = 'block';
+        }
+
+        async function saveToCloset() {
+            if (!lastAnalysis || !lastAnalysis.items_spotted || lastAnalysis.items_spotted.length === 0) return;
+            
+            try {
+                const formData = new FormData();
+                formData.append('item_name', lastAnalysis.items_spotted[0]);
+                formData.append('image_url', lastAnalysis.image_url);
+
+                const response = await fetch('/add-to-closet/', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+                if (data.status === 'success') {
+                    document.getElementById('closet-offer').innerHTML = `
+                        <p style="color: #34d399; font-size: 13px; font-weight: 500; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            Added to Closet
+                        </p>
+                    `;
+                }
+            } catch (error) {
+                console.error('Save to closet error:', error);
+            }
+        }
+
+        async function loadCloset() {
+            const grid = document.getElementById('closet-grid');
+            const empty = document.getElementById('closet-empty');
+
+            try {
+                const response = await fetch('/closet');
+                const data = await response.json();
+
+                if (data.status === 'success' && data.data && data.data.length > 0) {
+                    empty.style.display = 'none';
+                    grid.innerHTML = data.data.map(item => `
+                        <div class="glass" style="border-radius: 16px; overflow: hidden;">
+                            <img src="${escapeHtml(item.image_url)}" style="width: 100%; aspect-ratio: 1; object-fit: cover;">
+                            <div style="padding: 12px;">
+                                <p style="font-size: 12px; font-weight: 600; text-align: center; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${escapeHtml(item.item_name)}</p>
+                            </div>
+                        </div>
+                    `).join('');
+                } else {
+                    grid.innerHTML = '';
+                    empty.style.display = 'block';
+                }
+            } catch (error) {
+                console.error('Load closet error:', error);
+            }
+        }
+
+        async function loadCommunity() {
+            const list = document.getElementById('community-list');
+            const empty = document.getElementById('community-empty');
+
+            try {
+                const response = await fetch('/community');
+                const data = await response.json();
+
+                if (data.status === 'success' && data.data && data.data.length > 0) {
+                    empty.style.display = 'none';
+                    list.innerHTML = data.data.map(fit => `
+                        <div class="glass-card" style="border-radius: 20px; overflow: hidden;">
+                            <img src="${escapeHtml(fit.image_url)}" style="width: 100%; aspect-ratio: 3/4; object-fit: cover;">
+                            <div style="padding: 16px;">
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <p style="font-size: 11px; color: var(--text-muted);">${escapeHtml(fit.occasion || '')}</p>
+                                    <p style="font-size: 14px; font-weight: 700;" class="text-brand">${fit.occasion_match || 0}%</p>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('');
+                } else {
+                    list.innerHTML = '';
+                    empty.style.display = 'block';
+                }
+            } catch (error) {
+                console.error('Load community error:', error);
+            }
+        }
+
+        async function loadProfile() {
+            try {
+                const response = await fetch('/profile-dna');
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    document.getElementById('dna-title').textContent = data.dna || 'Style DNA';
+                    document.getElementById('level-badge').textContent = data.level || 'Newcomer';
+                    document.getElementById('avg-match').textContent = `${data.avg_match || 0}%`;
+                    document.getElementById('total-fits').textContent = data.total_fits || 0;
+                    document.getElementById('insight-text').textContent = data.insight || '';
+                }
+
+                // Load history
+                const historyResponse = await fetch('/history?limit=6');
+                const historyData = await historyResponse.json();
+                const historyGrid = document.getElementById('history-grid');
+
+                if (historyData.status === 'success' && historyData.data && historyData.data.length > 0) {
+                    historyGrid.innerHTML = historyData.data.filter(fit => fit.image_url).map(fit => `
+                        <div class="glass" style="border-radius: 12px; overflow: hidden;">
+                            <img src="${escapeHtml(fit.image_url)}" style="width: 100%; aspect-ratio: 1; object-fit: cover;">
+                            <div style="padding: 8px; text-align: center;">
+                                <p style="font-size: 11px; font-weight: 700; color: var(--pink);">${fit.occasion_match || 0}%</p>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+            } catch (error) {
+                console.error('Load profile error:', error);
+            }
+        }
+
+        function showError(message) {
+            document.getElementById('error-message').textContent = message;
+            errorState.style.display = 'block';
+            loadingState.style.display = 'none';
+            resultsCard.style.display = 'none';
+        }
+
+        function resetAnalysis() {
+            resultsCard.style.display = 'none';
+            errorState.style.display = 'none';
+            analyzeBtn.style.display = 'block';
+        }
+
+        function resetAll() {
+            clearImage();
+            selectedOccasion = '';
+            occasionBtn.innerHTML = `
+                <span style="color: var(--text-muted); font-size: 14px;">Where you headed?</span>
+                <svg width="20" height="20" fill="none" stroke="var(--text-muted)" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                </svg>
+            `;
+            vibeInput.value = '';
+            lastAnalysis = null;
+            resetAnalysis();
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        updateAnalyzeButton();
     </script>
 </body>
 </html>
