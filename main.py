@@ -182,42 +182,34 @@ async def get_current_user_id(authorization: Optional[str] = Header(None)) -> st
     """
     Extracts and verifies the JWT token from the Authorization header.
     Returns the authenticated user's UUID.
-    🔓 DEV MODE: Falls back to 'dev-user' when no valid token is provided.
-    REMOVE THE FALLBACK BEFORE PRODUCTION LAUNCH.
     """
-    # ── DEV BYPASS: No header? No problem. ──
     if not authorization:
-        logger.warning("🔓 No Authorization header — using dev-user")
-        return "dev-user"
+        raise HTTPException(status_code=401, detail="Authorization header required")
 
     if not authorization.startswith("Bearer "):
-        logger.warning("🔓 Malformed Authorization header — using dev-user")
-        return "dev-user"
+        raise HTTPException(status_code=401, detail="Invalid Authorization header format")
 
     token = authorization.split(" ")[1]
 
     if not token or token.strip() == "":
-        logger.warning("🔓 Empty token — using dev-user")
-        return "dev-user"
+        raise HTTPException(status_code=401, detail="Empty token")
 
-    # ── REAL AUTH: Validate with Supabase ──
     try:
         if not db:
-            logger.warning("🔓 Database not connected — using dev-user")
-            return "dev-user"
+            raise HTTPException(status_code=503, detail="Database not configured")
 
         user_data = db.auth.get_user(token)
         if not user_data or not user_data.user:
-            raise HTTPException(status_code=401, detail="Invalid session token")
+            raise HTTPException(status_code=401, detail="Invalid or expired token")
 
         return user_data.user.id
 
     except HTTPException:
-        raise  # ← Only REAL auth failures still throw 401
+        raise
     except Exception as e:
         logger.error(f"Auth verification failed: {e}")
-        logger.warning("🔓 Auth error — falling back to dev-user")
-        return "dev-user"
+        raise HTTPException(status_code=401, detail="Session expired. Please log in again.")
+
 
 
 # ── Auth Endpoints ──
