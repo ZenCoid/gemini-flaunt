@@ -1,21 +1,8 @@
-# FLAUNT.FIT Backend Dependencies
-
-# Web Framework
-fastapi>=0.109.0
-uvicorn[standard]>=0.27.0
-
-# Environment
-python-dotenv>=1.0.0
-
-# Image Processing
-Pillow>=10.0.0
-
-# HTTP Client
-httpx>=0.26.0
-
-# Database
-supabase>=2.0.0
-
-# ASGI server
-pydantic>=2.0.0
-python-multipart>=0.0.6
+fastapi==0.109.0
+uvicorn==0.27.0
+httpx==0.26.0
+supabase==2.5.0
+python-dotenv==1.0.1
+Pillow==10.2.0
+pydantic==2.6.1
+python-multipart==0.0.9

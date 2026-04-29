@@ -178,25 +178,47 @@ async def upload_to_supabase(file_bytes: bytes, file_path: str, content_type: st
 # 🔐 AUTHENTICATION — THE SECURITY GUARD
 # ============================================================
 
-async def get_current_user_id(authorization: str = Header(...)) -> str:
+async def get_current_user_id(authorization: Optional[str] = Header(None)) -> str:
     """
     Extracts and verifies the JWT token from the Authorization header.
     Returns the authenticated user's UUID.
-    This is injected into every protected route via Depends().
+    🔓 DEV MODE: Falls back to 'dev-user' when no valid token is provided.
+    REMOVE THE FALLBACK BEFORE PRODUCTION LAUNCH.
     """
+    # ── DEV BYPASS: No header? No problem. ──
+    if not authorization:
+        logger.warning("🔓 No Authorization header — using dev-user")
+        return "dev-user"
+
     if not authorization.startswith("Bearer "):
-        raise HTTPException(status_code=401, detail="Missing or invalid Authorization header")
+        logger.warning("🔓 Malformed Authorization header — using dev-user")
+        return "dev-user"
 
     token = authorization.split(" ")[1]
 
+    if not token or token.strip() == "":
+        logger.warning("🔓 Empty token — using dev-user")
+        return "dev-user"
+
+    # ── REAL AUTH: Validate with Supabase ──
     try:
+        if not db:
+            logger.warning("🔓 Database not connected — using dev-user")
+            return "dev-user"
+
         user_data = db.auth.get_user(token)
         if not user_data or not user_data.user:
             raise HTTPException(status_code=401, detail="Invalid session token")
+
         return user_data.user.id
+
+    except HTTPException:
+        raise  # ← Only REAL auth failures still throw 401
     except Exception as e:
         logger.error(f"Auth verification failed: {e}")
-        raise HTTPException(status_code=401, detail="Session expired or invalid. Please log in again.")
+        logger.warning("🔓 Auth error — falling back to dev-user")
+        return "dev-user"
+
 
 # ── Auth Endpoints ──
 
@@ -253,8 +275,8 @@ def build_analysis_prompt(
     if vibe_goal:
         vibe_section = f'\nUser\'s Desired Vibe: "{vibe_goal}". Judge if they achieved this or if they are completely delulu.\n'
 
-        roast_json_field = ',\n    "roast": "<MANDATORY: savage roast 2-3 sentences. DO NOT SKIP THIS FIELD.>"' if roast_mode != "off" else ''
-
+    # 🔴 FIX: Moved OUTSIDE the 'if vibe_goal' block so it always runs
+    roast_json_field = ',\n    "roast": "<MANDATORY: savage roast 2-3 sentences. DO NOT SKIP THIS FIELD.>"' if roast_mode != "off" else ''
 
     if roast_mode != "off":
         personality = "a ruthless Lahori fashion troll with Gen Z brain-rot and zero filter. You are not a consultant. You are not helpful. You are the friend who tells the truth so brutally it circles back to being hilarious."
@@ -282,8 +304,7 @@ FINAL RULE: Make the user laugh AND cry. If their eyes don't water, you weren't 
 - Instead say: "Honestly, this jacket is carrying the whole fit" or "Those shoes are fighting with the pants".
 - Never be cruel. Honest but encouraging."""
 
-        json_instruction = "Return ONLY valid JSON. The 'roast' key is MANDATORY when Roast Mode is ON. If you leave it empty or output placeholder text, the app breaks. NO text outside brackets. NO markdown."
-
+    json_instruction = "Return ONLY valid JSON. The 'roast' key is MANDATORY when Roast Mode is ON. If you leave it empty or output placeholder text, the app breaks. NO text outside brackets. NO markdown."
 
     return f"""Act as {personality}. Analyze this {occasion} outfit.
 {vibe_section}
@@ -302,9 +323,10 @@ CRITICAL: {json_instruction}
     "formality_calibration": "<overdressed/underdressed/nailed it, one sentence>",
     "the_fix": "<ONE specific fix or 'Lock it in.'>",
     "items_spotted": ["<list actual items>"],
-     "vibe_check": "<1-2 sentence honest reaction>"{roast_json_field},
+    "vibe_check": "<1-2 sentence honest reaction>"{roast_json_field},
     "confidence": "<'High', 'Medium', or 'Low'>"
 }}"""
+
 
 # ============================================================
 # ROUTES
